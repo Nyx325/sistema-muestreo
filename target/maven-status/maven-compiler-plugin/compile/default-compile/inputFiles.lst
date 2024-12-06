@@ -1,0 +1,15 @@
+/home/rubenor/workspace/sistema-muestreo/src/main/java/org/conagua/App.java
+/home/rubenor/workspace/sistema-muestreo/src/main/java/org/conagua/common/adapter/gui/IRefreshable.java
+/home/rubenor/workspace/sistema-muestreo/src/main/java/org/conagua/common/adapter/gui/LabeledInput.java
+/home/rubenor/workspace/sistema-muestreo/src/main/java/org/conagua/common/adapter/gui/PagedTable.java
+/home/rubenor/workspace/sistema-muestreo/src/main/java/org/conagua/common/adapter/gui/Pager.java
+/home/rubenor/workspace/sistema-muestreo/src/main/java/org/conagua/common/domain/IController.java
+/home/rubenor/workspace/sistema-muestreo/src/main/java/org/conagua/common/domain/IEntity.java
+/home/rubenor/workspace/sistema-muestreo/src/main/java/org/conagua/common/domain/IRepository.java
+/home/rubenor/workspace/sistema-muestreo/src/main/java/org/conagua/common/domain/Search.java
+/home/rubenor/workspace/sistema-muestreo/src/main/java/org/conagua/common/domain/UserError.java
+/home/rubenor/workspace/sistema-muestreo/src/main/java/org/conagua/user/domain/IUser.java
+/home/rubenor/workspace/sistema-muestreo/src/main/java/org/conagua/user/domain/NewUser.java
+/home/rubenor/workspace/sistema-muestreo/src/main/java/org/conagua/user/extern/InMemoryUser.java
+/home/rubenor/workspace/sistema-muestreo/src/main/java/org/conagua/user/extern/InMemoryUserRepository.java
+/home/rubenor/workspace/sistema-muestreo/src/main/java/org/conagua/user/extern/UserController.java

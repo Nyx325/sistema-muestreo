@@ -1,8 +1,9 @@
+
 package org.conagua.common.domain;
 
 import java.util.UUID;
 
-public interface IRepository {
+public interface IController {
   public IEntity get(UUID id) throws UserError;
 
   public void add(IEntity data) throws UserError;

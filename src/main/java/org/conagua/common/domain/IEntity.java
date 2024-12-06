@@ -11,4 +11,6 @@ public interface IEntity {
   // Convertir los atributos que se quieren
   // imprimir a un array de strings
   public String[] toStrArr();
+  public boolean isActive();
+  public void setActive(boolean active);
 }
