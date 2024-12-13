@@ -14,5 +14,5 @@ public interface IController {
 
   public void delete(UUID id) throws UserError;
 
-  public Search<IEntity> getBy(Object criteria, long page) throws UserError;
+  public Search getBy(Object criteria, long page) throws UserError;
 }
