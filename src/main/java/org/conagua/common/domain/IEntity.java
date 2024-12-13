@@ -4,13 +4,20 @@ import java.util.UUID;
 
 public interface IEntity {
   /**
-   * 
+   * Metodo que permite obtener un ID único que identifica
+   * a la entidad
+   *
+   * @return {UUID} el ID único que identifica a la entidad
    */
   public UUID getId();
 
-  // Convertir los atributos que se quieren
-  // imprimir a un array de strings
-  public String[] toStrArr();
-  public boolean isActive();
-  public void setActive(boolean active);
+  /**
+   * Método que convierte los valores que van
+   * a imprimirse en la tabla a un array de
+   * Strings
+   *
+   * @return {Stirng[]} atributos en forma de
+   *         array de Strings
+   */
+  public String[] attributesToArray();
 }

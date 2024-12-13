@@ -79,7 +79,7 @@ public class PagedTable extends Component implements IRefreshable {
 
       for (int i = 0; i < results.size(); i++) {
         IEntity entity = results.get(i);
-        tableData[i] = entity.toStrArr();
+        tableData[i] = entity.attributesToArray();
       }
 
       // Actualizar el modelo de la tabla
