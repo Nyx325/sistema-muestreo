@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.List;
 
-import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -13,7 +12,7 @@ import org.conagua.common.domain.IController;
 import org.conagua.common.domain.IEntity;
 import org.conagua.common.domain.Search;
 
-public class PagedTable extends JComponent implements IRefreshable {
+public class PagedTable extends Component implements IRefreshable {
   private final IController controller;
   private Search lastSearch;
   private JTable table;
@@ -80,7 +79,6 @@ public class PagedTable extends JComponent implements IRefreshable {
 
       for (int i = 0; i < results.size(); i++) {
         IEntity entity = results.get(i);
-        // Usar toStrArr para convertir la entidad a una fila
         tableData[i] = entity.toStrArr();
       }
 

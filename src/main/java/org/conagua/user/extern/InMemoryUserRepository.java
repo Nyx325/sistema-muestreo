@@ -15,6 +15,14 @@ public class InMemoryUserRepository implements IRepository {
 
   public InMemoryUserRepository() {
     this.users = new ArrayList<>();
+    users.add(new InMemoryUser("C", "D"));
+    users.add(new InMemoryUser("C", "D"));
+    users.add(new InMemoryUser("C", "D"));
+    users.add(new InMemoryUser("C", "D"));
+    users.add(new InMemoryUser("C", "D"));
+    users.add(new InMemoryUser("C", "D"));
+    users.add(new InMemoryUser("C", "D"));
+
   }
 
   @Override

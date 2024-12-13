@@ -5,11 +5,10 @@ import java.awt.FlowLayout;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
-import javax.swing.JComponent;
 
 import org.conagua.common.domain.Search;
 
-public class Pager extends JComponent implements IRefreshable {
+public class Pager extends Component implements IRefreshable {
   private final PagedTable table;
   private long maxBtns;
 

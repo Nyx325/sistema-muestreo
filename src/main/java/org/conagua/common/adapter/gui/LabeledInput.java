@@ -1,11 +1,10 @@
 package org.conagua.common.adapter.gui;
 
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 
-public class LabeledInput extends JComponent {
+public class LabeledInput extends Component {
   private final JLabel label;
   private final JTextField input;
 

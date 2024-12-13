@@ -87,9 +87,9 @@ public class InMemoryUser implements IUser, IEntity {
     String[] arr = new String[4];
 
     arr[0] = firstName.toString();
-    arr[1] = midName.toString();
+    arr[1] = midName == null ? "X" : midName.toString();
     arr[2] = fatherLastname.toString();
-    arr[3] = motherLastname.toString();
+    arr[3] = motherLastname == null ? "X" : midName.toString();
 
     return arr;
   }
