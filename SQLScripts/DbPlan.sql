@@ -9,6 +9,7 @@ CREATE TABLE Logs(
 
 CREATE TABLE Signataries(
   id UUID PRIMARY KEY NOT NULL,
+  active BOOLEAN NOT NULL,
   first_name VARCHAR(50) NOT NULL,
   mid_name VARCHAR(50),
   father_lastname VARCHAR(50) NOT NULL,
@@ -35,7 +36,8 @@ CREATE TABLE Parameters(
 CREATE TABLE Units(
   id UUID PRIMARY KEY NOT NULL,
   units VARCHAR(10),
-  window_type ENUM("1", "2", "3")
+  -- window_type ENUM("1", "2", "3")
+  window_type TEXT
 );
 
 CREATE TABLE Clients(

@@ -104,4 +104,9 @@ public class Signatary implements ISignatary {
 
     return attributes;
   }
+
+  @Override
+  public String toString() {
+    return this.siglasBuilder.generateSiglas(this);
+  }
 }

@@ -67,7 +67,7 @@ public interface ISignatary extends IEntity, ILogicalDeletable {
   /**
    * Setter para establecer el apellido materno del signatario
    * 
-   * @param {String} Segundo apellido, nunca null
+   * @param {String} Segundo apellido, puede ser null
    */
   public void setMotherLastname(String lastname);
 
