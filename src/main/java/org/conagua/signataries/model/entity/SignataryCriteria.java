@@ -1,4 +1,4 @@
-package org.conagua.signataries.domain;
+package org.conagua.signataries.model.entity;
 
 public class SignataryCriteria {
   public String firstName;

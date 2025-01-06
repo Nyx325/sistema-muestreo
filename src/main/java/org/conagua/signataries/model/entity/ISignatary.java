@@ -1,7 +1,7 @@
-package org.conagua.signataries.domain;
+package org.conagua.signataries.model.entity;
 
-import org.conagua.common.domain.IEntity;
-import org.conagua.common.domain.ILogicalDeletable;
+import org.conagua.common.model.entity.IEntity;
+import org.conagua.common.model.entity.ILogicalDeletable;
 
 /**
  * Interfaz que representa la entidad de Singatario

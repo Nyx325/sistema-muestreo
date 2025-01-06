@@ -1,8 +1,8 @@
-package org.conagua.signataries.extern;
+package org.conagua.signataries.model.entity;
 
 import java.util.UUID;
 
-import org.conagua.signataries.domain.ISignatary;
+import org.conagua.signataries.controller.SiglasBuilder;
 
 public class Signatary implements ISignatary {
   private UUID id;

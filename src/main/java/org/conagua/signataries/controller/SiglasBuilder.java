@@ -1,6 +1,6 @@
-package org.conagua.signataries.extern;
+package org.conagua.signataries.controller;
 
-import org.conagua.signataries.domain.ISignatary;
+import org.conagua.signataries.model.entity.ISignatary;
 
 public class SiglasBuilder {
   public String nullableValue(String v) {
