@@ -2,6 +2,7 @@ package org.conagua.common.model.repository;
 
 import java.util.UUID;
 
+import org.conagua.common.model.entity.Criteria;
 import org.conagua.common.model.entity.IEntity;
 import org.conagua.common.model.entity.Search;
 
@@ -16,5 +17,5 @@ public interface IRepository {
 
   public void delete(UUID id) throws Exception;
 
-  public Search getBy(Object criteria, long page) throws Exception;
+  public Search getBy(Criteria criteria, long page) throws Exception;
 }

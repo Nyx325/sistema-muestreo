@@ -16,7 +16,7 @@ public interface ISignatary extends IEntity, ILogicalDeletable {
    * @returns {String} El primer nombre del signatario
    * @NonNull
    */
-  public String getfirstName();
+  public String getFirstName();
 
   /**
    * Getter para obtener el segundo nombre del signatario

@@ -17,12 +17,12 @@ public abstract class SQLiteRepository implements IRepository {
   /**
    * Configuración de distintas variables de entorno.
    */
-  private final String dbUrl;
+  protected final String dbUrl;
 
   /**
    * Nombre de la tabla asociada al repositorio.
    */
-  private final String tableName;
+  protected final String tableName;
 
   /**
    * Constructor que inicializa el nombre de la tabla y la configuración.
@@ -52,16 +52,14 @@ public abstract class SQLiteRepository implements IRepository {
    * @throws SQLException            Si ocurre un error en la conexión.
    * @throws TableNotExistsException Si la tabla no existe
    */
-  public void tableExists() throws SQLException {
+  public boolean tableExists() throws SQLException {
     String sql = "SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?";
 
     try (Connection conn = DriverManager.getConnection(dbUrl);
         PreparedStatement pstmt = conn.prepareStatement(sql)) {
       pstmt.setString(1, tableName);
       try (ResultSet rs = pstmt.executeQuery()) {
-        if (!rs.next()) {
-          throw new TableNotExistsException("ERROR: La tabla '" + tableName + "' no existe.");
-        }
+        return rs.next();
       }
     }
   }
@@ -81,6 +79,9 @@ public abstract class SQLiteRepository implements IRepository {
    */
   @Override
   public void add(IEntity data) throws SQLException, InvalidInstanceException, IllegalArgumentException {
+    if (!tableExists())
+      createTable();
+
     this.checkInstance(data);
 
     // Obtener los nombres de las columnas y los valores de la entidad
@@ -196,7 +197,7 @@ public abstract class SQLiteRepository implements IRepository {
    * 
    * @throws Exception Si ocurre un error al ejecutar la consulta de creación.
    */
-  public abstract void createTable() throws Exception;
+  public abstract void createTable() throws SQLException;
 
   /**
    * Valida que la instancia proporcionada sea del tipo esperado por el
@@ -220,6 +221,8 @@ public abstract class SQLiteRepository implements IRepository {
    * 
    * @param obj La entidad a procesar.
    * @return Un arreglo con los valores en el mismo orden que las columnas.
+   * @throws InvalidInstanceException Si se recibe un IEntity de una instancia
+   *                                  inválida
    */
   public abstract String[] genValues(IEntity obj);
 
@@ -238,5 +241,5 @@ public abstract class SQLiteRepository implements IRepository {
    *                                  no son válidos para crear una instancia
    *                                  de un registro
    */
-  public abstract IEntity fromResultSet(ResultSet rs) throws IllegalArgumentException;
+  public abstract IEntity fromResultSet(ResultSet rs) throws SQLException;
 }
