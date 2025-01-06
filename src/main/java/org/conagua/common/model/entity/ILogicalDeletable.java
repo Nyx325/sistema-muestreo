@@ -1,4 +1,4 @@
-package org.conagua.common.domain;
+package org.conagua.common.model.entity;
 
 public interface ILogicalDeletable {
   public boolean isActive();

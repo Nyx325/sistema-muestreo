@@ -1,4 +1,4 @@
-package org.conagua.common.domain;
+package org.conagua.common.model.entity;
 
 import java.util.UUID;
 
