@@ -83,4 +83,6 @@ public interface ISignatary extends IEntity, ILogicalDeletable {
    * @NonNull
    */
   public String getSiglas();
+
+  public String getFullName();
 }

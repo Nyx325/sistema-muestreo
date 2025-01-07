@@ -110,8 +110,30 @@ public class Signatary implements ISignatary {
     StringBuilder str = new StringBuilder("ID: ")
         .append(id)
         .append(" Siglas: ")
-        .append(siglasBuilder.generateSiglas(this));
+        .append(siglasBuilder.generateSiglas(this))
+        .append(" Nombre: ")
+        .append(getFullName());
 
     return str.toString();
+  }
+
+  @Override
+  public String getFullName() {
+    StringBuilder name = new StringBuilder(firstName)
+        .append(" ");
+
+    if (midName != null) {
+      name.append(midName)
+          .append(" ");
+    }
+
+    name.append(fatherLastname);
+
+    if (motherLastname != null) {
+      name.append(motherLastname)
+          .append(" ");
+    }
+
+    return name.toString();
   }
 }

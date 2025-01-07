@@ -153,7 +153,8 @@ public class SignatarySQLiteRepository extends SQLiteRepository {
         throw new SQLException("El resultado de un COUNT(*) deberia ser un número");
 
       long totalRecords = queryData.getRs().getLong(1);
-      return (long) Math.ceil((double) totalRecords / cfg.getPageSize());
+      long totalPages = (long) Math.ceil((double) totalRecords / cfg.getPageSize());
+      return totalPages == 0 ? 1 : totalPages;
     }
   }
 
@@ -183,9 +184,7 @@ public class SignatarySQLiteRepository extends SQLiteRepository {
 
     try (QueryData queryData = this.criteriaQuery(query.toString(), criteria, offset)) {
       List<IEntity> result = new ArrayList<>();
-      int values = 0;
       while (queryData.getRs().next()) {
-        values++;
         IEntity s = fromResultSet(queryData.getRs());
         result.add(s);
       }
@@ -214,7 +213,7 @@ public class SignatarySQLiteRepository extends SQLiteRepository {
       SignataryCriteria c = (SignataryCriteria) criteria;
 
       if (c.active != null)
-        pstmt.setBoolean(paramIndex++, c.active);
+        pstmt.setString(paramIndex++, c.active.toString());
 
       if (c.firstName != null)
         pstmt.setString(paramIndex++, "%" + c.firstName + "%");
@@ -234,6 +233,7 @@ public class SignatarySQLiteRepository extends SQLiteRepository {
       pstmt.setLong(paramIndex, offset);
     }
 
+    System.out.println(pstmt.toString());
     return new QueryData(conn, pstmt, pstmt.executeQuery());
   }
 }
