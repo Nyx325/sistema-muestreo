@@ -49,7 +49,7 @@ public class Signatary implements ISignatary {
   }
 
   @Override
-  public String getfirstName() {
+  public String getFirstName() {
     return firstName;
   }
 
@@ -107,6 +107,11 @@ public class Signatary implements ISignatary {
 
   @Override
   public String toString() {
-    return this.siglasBuilder.generateSiglas(this);
+    StringBuilder str = new StringBuilder("ID: ")
+        .append(id)
+        .append(" Siglas: ")
+        .append(siglasBuilder.generateSiglas(this));
+
+    return str.toString();
   }
 }

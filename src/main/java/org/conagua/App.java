@@ -1,45 +1,29 @@
 package org.conagua;
 
+import java.util.InputMismatchException;
 import java.util.UUID;
 
-import org.conagua.common.domain.IEntity;
-import org.conagua.common.domain.IRepository;
-import org.conagua.common.domain.Search;
-import org.conagua.signataries.domain.ISignatary;
-import org.conagua.signataries.domain.SignataryCriteria;
-// import org.conagua.signataries.extern.InMemorySignataryRepository;
-import org.conagua.signataries.extern.Signatary;
-import org.conagua.signataries.extern.SignataryEbeanRepository;
-
-import io.ebean.DB;
+import org.conagua.common.model.entity.*;
+import org.conagua.common.controller.*;
+import org.conagua.signataries.model.entity.*;
+import org.conagua.signataries.controller.*;
 
 public class App {
   public static void main(String[] args) {
-    DB.getDefault();
+    IController ctrl = new SignataryController();
+    ISignatary s = new Signatary(UUID.randomUUID(), "Maria del", "Carmen", "Ponce de", "León");
 
-    IRepository signataryRepo = new SignataryEbeanRepository();
-    ISignatary s1 = new Signatary(UUID.randomUUID(), "Rubén", "Román");
-    ISignatary s2 = new Signatary(UUID.randomUUID(), "Omar", "Salinas");
     try {
-      System.out.println("Agregando");
-      signataryRepo.add(s1);
-      signataryRepo.add(s2);
+      ctrl.add(s);
 
-      Search search = signataryRepo.getBy(new SignataryCriteria(), 1);
-      System.out.println("Busqueda. Resultados: " + search.getResult().size());
-      for (IEntity entity : search.getResult()) {
-        System.out.println(entity);
+      SignataryCriteria criteria = new SignataryCriteria();
+      Search lastSearch = ctrl.getBy(criteria, 1);
+
+      for (IEntity entity : lastSearch.getResult()) {
+        System.out.printf("Signatario: %s\n", entity);
       }
-
-      System.out.println("Eliminar");
-      signataryRepo.delete(s1);
-      signataryRepo.delete(s2);
-
-      Search search2 = signataryRepo.getBy(new SignataryCriteria(), 1);
-      System.out.println("Busqueda. Resultados: " + search2.getResult().size());
-      for (IEntity entity : search2.getResult()) {
-        System.out.println(entity);
-      }
+    } catch (InputMismatchException e) {
+      System.err.println("FORMATO INVÁLIDO: " + e.getMessage());
     } catch (Exception e) {
       e.printStackTrace();
     }

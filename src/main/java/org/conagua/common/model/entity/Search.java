@@ -6,10 +6,10 @@ import java.util.List;
 public class Search {
   long totalPages;
   long currentPage;
-  Object criteria;
+  Criteria criteria;
   List<IEntity> result;
 
-  public Search(long totalPages, long currentPage, Object criteria, List<IEntity> result) {
+  public Search(long totalPages, long currentPage, Criteria criteria, List<IEntity> result) {
     int errors = 0;
     StringBuilder str = new StringBuilder();
     if (totalPages <= 0) {
@@ -32,7 +32,7 @@ public class Search {
     this.result = result;
   }
 
-  public Search(long totalPages, long currentPage, Object criteria) {
+  public Search(long totalPages, long currentPage, Criteria criteria) {
     this(totalPages, currentPage, criteria, new ArrayList<>());
   }
 
@@ -44,7 +44,7 @@ public class Search {
     return result;
   }
 
-  public Object getCriteria() {
+  public Criteria getCriteria() {
     return criteria;
   }
 
