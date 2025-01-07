@@ -3,6 +3,7 @@ package org.conagua.signataries.controller;
 import java.util.*;
 
 import org.conagua.common.model.entity.*;
+import org.conagua.common.model.exceptions.NotFoundException;
 import org.conagua.common.controller.Controller;
 import org.conagua.common.model.repository.IRepository;
 import org.conagua.signataries.model.entity.ISignatary;
@@ -29,10 +30,14 @@ public class SignataryController extends Controller {
     this.nameValidator = nameValidator;
   }
 
-  @Override
-  public void add(IEntity data) throws Exception {
+  private void checkInstance(IEntity data) {
     if (data instanceof ISignatary == false)
       throw new IllegalArgumentException("data debe ser una instancia de ISignatary");
+  }
+
+  @Override
+  public void add(IEntity data) throws Exception {
+    checkInstance(data);
 
     List<String> msg = new ArrayList<>();
     ISignatary s = (ISignatary) data;
@@ -72,16 +77,27 @@ public class SignataryController extends Controller {
 
   @Override
   public void update(IEntity data) throws Exception {
+    checkInstance(data);
+
+    if (get(data.getId()) == null)
+      throw new NotFoundException("No se encontró el signatario");
+
     this.repo.update(data);
   }
 
   @Override
   public void delete(UUID id) throws Exception {
+    if (get(id) == null)
+      throw new NotFoundException("No se encontró el signatario");
+
     this.repo.delete(id);
   }
 
   @Override
   public void delete(IEntity data) throws Exception {
+    if (get(data.getId()) == null)
+      throw new NotFoundException("No se encontró el signatario");
+
     this.repo.delete(data);
   }
 }
