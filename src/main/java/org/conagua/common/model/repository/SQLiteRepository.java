@@ -17,7 +17,7 @@ public abstract class SQLiteRepository implements IRepository {
   /**
    * Configuración de distintas variables de entorno.
    */
-  protected final String dbUrl;
+  protected final Config cfg;
 
   /**
    * Nombre de la tabla asociada al repositorio.
@@ -31,19 +31,7 @@ public abstract class SQLiteRepository implements IRepository {
    */
   public SQLiteRepository(String tableName) {
     this.tableName = tableName;
-    this.dbUrl = Config.getInstance().getDbUrl();
-  }
-
-  /**
-   * Constructor que inicializa el nombre de la tabla y la URL de la
-   * base de datos.
-   * 
-   * @param tableName Nombre de la tabla asociada al repositorio.
-   * @param dbUrl     URL de la base de datos.
-   */
-  public SQLiteRepository(String tableName, String dbUrl) {
-    this.tableName = tableName;
-    this.dbUrl = dbUrl;
+    this.cfg = Config.getInstance();
   }
 
   /**
@@ -55,7 +43,7 @@ public abstract class SQLiteRepository implements IRepository {
   public boolean tableExists() throws SQLException {
     String sql = "SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?";
 
-    try (Connection conn = DriverManager.getConnection(dbUrl);
+    try (Connection conn = DriverManager.getConnection(cfg.getDbUrl());
         PreparedStatement pstmt = conn.prepareStatement(sql)) {
       pstmt.setString(1, tableName);
       try (ResultSet rs = pstmt.executeQuery()) {
@@ -102,7 +90,7 @@ public abstract class SQLiteRepository implements IRepository {
     query.append("?)");
 
     try (
-        Connection conn = DriverManager.getConnection(dbUrl);
+        Connection conn = DriverManager.getConnection(cfg.getDbUrl());
         PreparedStatement pstmt = conn.prepareStatement(query.toString())) {
       for (int i = 0; i < values.length; i++)
         pstmt.setString(i + 1, values[i]);
@@ -132,7 +120,7 @@ public abstract class SQLiteRepository implements IRepository {
     }
 
     try (
-        Connection conn = DriverManager.getConnection(dbUrl);
+        Connection conn = DriverManager.getConnection(cfg.getDbUrl());
         PreparedStatement pstmt = conn.prepareStatement(query.toString())) {
       for (int i = 0; i < values.length; i++)
         pstmt.setString(i + 1, values[i]);
@@ -153,7 +141,7 @@ public abstract class SQLiteRepository implements IRepository {
         .append(" = ?");
 
     try (
-        Connection conn = DriverManager.getConnection(dbUrl);
+        Connection conn = DriverManager.getConnection(cfg.getDbUrl());
         PreparedStatement pstmt = conn.prepareStatement(query.toString())) {
       pstmt.setString(1, id.toString());
       try (ResultSet rs = pstmt.executeQuery()) {
@@ -183,7 +171,7 @@ public abstract class SQLiteRepository implements IRepository {
         .append("=?");
 
     try (
-        Connection conn = DriverManager.getConnection(dbUrl);
+        Connection conn = DriverManager.getConnection(cfg.getDbUrl());
         PreparedStatement pstmt = conn.prepareStatement(query.toString())) {
       pstmt.setString(1, data.getId().toString());
       pstmt.executeUpdate();
