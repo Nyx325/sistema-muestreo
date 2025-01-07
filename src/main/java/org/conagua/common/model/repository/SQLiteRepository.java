@@ -73,16 +73,18 @@ public abstract class SQLiteRepository implements IRepository {
     this.checkInstance(data);
 
     // Obtener los nombres de las columnas y los valores de la entidad
-    String[] columns = getColumns();
-    String[] values = genValues(data);
+    String[] columns = getColumnsWithoutId();
+    String[] values = fieldsWithoutId(data);
 
     if (columns.length != values.length)
       throw new IllegalArgumentException("El número de columnas y valores no coincide.");
 
     // Construir dinámicamente la consulta
-    StringBuilder query = new StringBuilder("INSERT INTO ").append(tableName).append(" (");
-    query.append(String.join(", ", columns));
-    query.append(") VALUES (");
+    StringBuilder query = new StringBuilder("INSERT INTO ").append(tableName).append(" (")
+        .append(idField()).append(", ")
+        .append(String.join(", ", columns))
+        .append(") VALUES (")
+        .append("?,");
 
     for (int i = 0; i < columns.length - 1; i++)
       query.append("?,");
@@ -92,8 +94,11 @@ public abstract class SQLiteRepository implements IRepository {
     try (
         Connection conn = DriverManager.getConnection(cfg.getDbUrl());
         PreparedStatement pstmt = conn.prepareStatement(query.toString())) {
+
+      pstmt.setString(1, data.getId().toString());
+
       for (int i = 0; i < values.length; i++)
-        pstmt.setString(i + 1, values[i]);
+        pstmt.setString(i + 2, values[i]);
 
       pstmt.executeUpdate();
     }
@@ -101,11 +106,14 @@ public abstract class SQLiteRepository implements IRepository {
 
   @Override
   public void update(IEntity data) throws SQLException, InvalidInstanceException {
+    if (!tableExists())
+      createTable();
+
     this.checkInstance(data);
 
     // Obtener los nombres de las columnas y los valores de la entidad
-    String[] columns = getColumns();
-    String[] values = genValues(data);
+    String[] columns = getColumnsWithoutId();
+    String[] values = fieldsWithoutId(data);
 
     if (columns.length != values.length)
       throw new IllegalArgumentException("El número de columnas y valores no coincide.");
@@ -119,11 +127,18 @@ public abstract class SQLiteRepository implements IRepository {
       query.append(columns[i]).append("= ?");
     }
 
+    query.append(" WHERE ")
+        .append(idField())
+        .append("=?");
+
     try (
         Connection conn = DriverManager.getConnection(cfg.getDbUrl());
         PreparedStatement pstmt = conn.prepareStatement(query.toString())) {
-      for (int i = 0; i < values.length; i++)
+      int i;
+      for (i = 0; i < values.length; i++)
         pstmt.setString(i + 1, values[i]);
+
+      pstmt.setString(i + 1, data.getId().toString());
 
       pstmt.executeUpdate();
     }
@@ -131,8 +146,12 @@ public abstract class SQLiteRepository implements IRepository {
 
   @Override
   public IEntity get(UUID id) throws SQLException, InvalidInstanceException {
-    String[] columns = this.getColumns();
+    if (!tableExists())
+      createTable();
+
+    String[] columns = this.getColumnsWithoutId();
     StringBuilder query = new StringBuilder("SELECT ")
+        .append(idField()).append(",")
         .append(String.join(",", columns))
         .append(" FROM ")
         .append(tableName)
@@ -144,8 +163,12 @@ public abstract class SQLiteRepository implements IRepository {
         Connection conn = DriverManager.getConnection(cfg.getDbUrl());
         PreparedStatement pstmt = conn.prepareStatement(query.toString())) {
       pstmt.setString(1, id.toString());
+
       try (ResultSet rs = pstmt.executeQuery()) {
-        return fromResultSet(rs);
+        if (rs.next())
+          return fromResultSet(rs);
+        else
+          return null;
       }
     }
   }
@@ -157,6 +180,9 @@ public abstract class SQLiteRepository implements IRepository {
   }
 
   public void delete(IEntity data) throws SQLException, InvalidInstanceException {
+    if (!tableExists())
+      createTable();
+
     if (data instanceof ILogicalDeletable) {
       ILogicalDeletable d = (ILogicalDeletable) data;
       d.setActive(false);
@@ -197,22 +223,24 @@ public abstract class SQLiteRepository implements IRepository {
   public abstract void checkInstance(IEntity obj) throws InvalidInstanceException;
 
   /**
-   * Obtiene los nombres de las columnas de la tabla asociada al repositorio.
+   * Obtiene los nombres de las columnas de la tabla asociada al repositorio
+   * omitiendo la columna del ID.
    * 
-   * @return Un arreglo con los nombres de las columnas.
+   * @return Un arreglo con los nombres de las columnas omitiendo el ID.
    */
-  public abstract String[] getColumns();
+  public abstract String[] getColumnsWithoutId();
 
   /**
    * Genera los valores que se usarán en una consulta a partir de la entidad
-   * proporcionada.
+   * proporcionada. El campo del ID será omitido
    * 
    * @param obj La entidad a procesar.
-   * @return Un arreglo con los valores en el mismo orden que las columnas.
+   * @return Un arreglo con los valores en el mismo orden que las columnas
+   *         omitiendo el ID.
    * @throws InvalidInstanceException Si se recibe un IEntity de una instancia
    *                                  inválida
    */
-  public abstract String[] genValues(IEntity obj);
+  public abstract String[] fieldsWithoutId(IEntity obj);
 
   /**
    * @return nombre que corresponde al campo que es el ID o PK de la

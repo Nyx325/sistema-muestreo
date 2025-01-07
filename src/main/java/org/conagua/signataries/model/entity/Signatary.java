@@ -1,7 +1,9 @@
 package org.conagua.signataries.model.entity;
 
+import java.util.InputMismatchException;
 import java.util.UUID;
 
+import org.conagua.common.model.entity.IEntity;
 import org.conagua.signataries.controller.SiglasBuilder;
 
 public class Signatary implements ISignatary {
@@ -31,6 +33,20 @@ public class Signatary implements ISignatary {
 
   public Signatary(UUID id, String firstName, String fatherLastname) {
     this(id, true, firstName, null, fatherLastname, null);
+  }
+
+  public static Signatary parseSignatary(IEntity entity) {
+    if (entity instanceof ISignatary == false)
+      throw new InputMismatchException();
+
+    ISignatary s = (ISignatary) entity;
+    return new Signatary(
+        s.getId(),
+        s.isActive(),
+        s.getFirstName(),
+        s.getMidName(),
+        s.getFatherLastname(),
+        s.getMotherLastname());
   }
 
   @Override
@@ -98,9 +114,9 @@ public class Signatary implements ISignatary {
     String[] attributes = new String[5];
 
     attributes[0] = firstName;
-    attributes[1] = midName != null ? midName : "";
+    attributes[1] = midName != null ? midName : "X";
     attributes[2] = fatherLastname;
-    attributes[3] = motherLastname != null ? motherLastname : "";
+    attributes[3] = motherLastname != null ? motherLastname : "X";
 
     return attributes;
   }
@@ -127,7 +143,7 @@ public class Signatary implements ISignatary {
           .append(" ");
     }
 
-    name.append(fatherLastname);
+    name.append(fatherLastname).append(" ");
 
     if (motherLastname != null) {
       name.append(motherLastname)

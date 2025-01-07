@@ -52,9 +52,8 @@ public class SignatarySQLiteRepository extends SQLiteRepository {
   }
 
   @Override
-  public String[] getColumns() {
+  public String[] getColumnsWithoutId() {
     String[] arr = {
-        "id",
         "active",
         "first_name",
         "mid_name",
@@ -71,16 +70,15 @@ public class SignatarySQLiteRepository extends SQLiteRepository {
   }
 
   @Override
-  public String[] genValues(IEntity obj) {
+  public String[] fieldsWithoutId(IEntity obj) {
     ISignatary sig = (ISignatary) obj;
 
     String[] values = {
-        sig.getId().toString(),
         Boolean.toString(sig.isActive()),
         sig.getFirstName(),
         sig.getMidName(),
         sig.getFatherLastname(),
-        sig.getMotherLastname(),
+        sig.getMotherLastname()
     };
 
     return values;
@@ -172,9 +170,10 @@ public class SignatarySQLiteRepository extends SQLiteRepository {
       throws SQLException {
     long pageSize = cfg.getPageSize();
     long offset = (page - 1) * pageSize;
-    String[] columns = getColumns();
+    String[] columns = getColumnsWithoutId();
 
     StringBuilder query = new StringBuilder("SELECT ")
+        .append(idField()).append(",")
         .append(String.join(",", columns))
         .append(" FROM ")
         .append(tableName)
@@ -233,7 +232,6 @@ public class SignatarySQLiteRepository extends SQLiteRepository {
       pstmt.setLong(paramIndex, offset);
     }
 
-    System.out.println(pstmt.toString());
     return new QueryData(conn, pstmt, pstmt.executeQuery());
   }
 }
