@@ -220,7 +220,8 @@ public abstract class SQLiteRepository implements IRepository {
       whereQuery.append(" WHERE ").append(String.join(" AND ", conditions));
 
     long totalPages = totalPagesQuery(whereQuery.toString(), criteria);
-    return searchQuery(whereQuery.toString(), criteria, page, totalPages);
+    Search s = searchQuery(whereQuery.toString(), criteria, page, totalPages);
+    return s;
   }
 
   /**

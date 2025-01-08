@@ -105,32 +105,55 @@ public class SignatarySQLiteRepository extends SQLiteRepository {
     List<String> conditions = new ArrayList<>();
 
     if (c.active != null)
-      conditions.add("active");
+      conditions.add("active=?");
 
     if (c.midName != null)
-      conditions.add("mid_name");
+      conditions.add("mid_name LIKE ?");
 
     if (c.firstName != null)
-      conditions.add("first_name");
+      conditions.add("first_name LIKE ?");
 
     if (c.fatherLastname != null)
-      conditions.add("father_lastname");
+      conditions.add("father_lastname LIKE ?");
 
     if (c.motherLastname != null)
-      conditions.add("mother_lastname");
+      conditions.add("mother_lastname LIKE ?");
 
     return conditions;
   }
 
   @Override
   protected QueryData criteriaQuery(String query, Criteria criteria, Long offset) throws SQLException {
-    if (!(criteria instanceof SignataryCriteria))
-      throw new IllegalArgumentException("Criteria debe ser instancia de SignataryCriteria");
+    Connection conn = DriverManager.getConnection(cfg.getDbUrl());
+    PreparedStatement pstmt = conn.prepareStatement(query);
 
-    try (Connection conn = DriverManager.getConnection(cfg.getDbUrl());
-        PreparedStatement pstmt = conn.prepareStatement(query)) {
+    int paramIndex = 1;
 
+    // Configuración de parámetros dinámicos
+    if (!criteria.isEmpty()) {
+      SignataryCriteria c = (SignataryCriteria) criteria;
+
+      if (c.active != null)
+        pstmt.setString(paramIndex++, c.active.toString());
+
+      if (c.firstName != null)
+        pstmt.setString(paramIndex++, "%" + c.firstName + "%");
+
+      if (c.midName != null)
+        pstmt.setString(paramIndex++, "%" + c.midName + "%");
+
+      if (c.fatherLastname != null)
+        pstmt.setString(paramIndex++, "%" + c.fatherLastname + "%");
+
+      if (c.motherLastname != null)
+        pstmt.setString(paramIndex++, "%" + c.motherLastname + "%");
     }
-    return null;
+
+    if (offset != null) {
+      pstmt.setLong(paramIndex++, cfg.getPageSize());
+      pstmt.setLong(paramIndex, offset);
+    }
+
+    return new QueryData(conn, pstmt, pstmt.executeQuery());
   }
 }
