@@ -1,6 +1,7 @@
 package org.conagua.signataries.model.entity;
 
 import java.util.InputMismatchException;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.conagua.common.model.entity.IEntity;
@@ -10,14 +11,14 @@ public class Signatary implements ISignatary {
   private UUID id;
   private boolean active;
   private String firstName;
-  private String midName;
   private String fatherLastname;
-  private String motherLastname;
+  private Optional<String> midName;
+  private Optional<String> motherLastname;
 
   private SiglasBuilder siglasBuilder = new SiglasBuilder();
 
-  public Signatary(UUID id, boolean active, String firstName, String midName, String fatherLastname,
-      String motherLastname) {
+  public Signatary(UUID id, boolean active, String firstName, Optional<String> midName, String fatherLastname,
+      Optional<String> motherLastname) {
     this.id = id;
     this.active = active;
     this.motherLastname = motherLastname;
@@ -26,13 +27,22 @@ public class Signatary implements ISignatary {
     this.midName = midName;
   }
 
+  public Signatary(UUID id, boolean active, String firstName, String midName, String fatherLastname,
+      String motherLastname) {
+    this(id, active, firstName, Optional.of(midName), fatherLastname, Optional.of(fatherLastname));
+  }
+
   public Signatary(UUID id, String firstName, String midName, String fatherLastname,
       String motherLastname) {
     this(id, true, firstName, midName, fatherLastname, motherLastname);
   }
 
+  public Signatary(UUID id, String firstName, String fatherLastname, String motherLastname) {
+    this(id, true, firstName, Optional.empty(), fatherLastname, Optional.of(motherLastname));
+  }
+
   public Signatary(UUID id, String firstName, String fatherLastname) {
-    this(id, true, firstName, null, fatherLastname, null);
+    this(id, true, firstName, Optional.empty(), fatherLastname, Optional.empty());
   }
 
   public static Signatary parseSignatary(IEntity entity) {
@@ -60,7 +70,7 @@ public class Signatary implements ISignatary {
   }
 
   @Override
-  public String getMidName() {
+  public Optional<String> getMidName() {
     return midName;
   }
 
@@ -75,7 +85,7 @@ public class Signatary implements ISignatary {
   }
 
   @Override
-  public String getMotherLastname() {
+  public Optional<String> getMotherLastname() {
     return motherLastname;
   }
 
@@ -90,7 +100,7 @@ public class Signatary implements ISignatary {
   }
 
   @Override
-  public void setMidName(String name) {
+  public void setMidName(Optional<String> name) {
     this.midName = name;
   }
 
@@ -105,20 +115,40 @@ public class Signatary implements ISignatary {
   }
 
   @Override
-  public void setMotherLastname(String lastname) {
+  public void setMotherLastname(Optional<String> lastname) {
     this.motherLastname = lastname;
   }
 
   @Override
-  public String[] attributesToArray() {
-    String[] attributes = new String[5];
+  public String[] fieldsToArray() {
+    String[] fields = {
+        firstName,
+        midName.isPresent() ? midName.get() : "-",
+        fatherLastname,
+        motherLastname.isPresent() ? motherLastname.get() : "-"
+    };
 
-    attributes[0] = firstName;
-    attributes[1] = midName != null ? midName : "X";
-    attributes[2] = fatherLastname;
-    attributes[3] = motherLastname != null ? motherLastname : "X";
+    return fields;
+  }
 
-    return attributes;
+  @Override
+  public String getFullName() {
+    StringBuilder name = new StringBuilder(firstName)
+        .append(" ");
+
+    if (midName.isPresent()) {
+      name.append(midName.get())
+          .append(" ");
+    }
+
+    name.append(fatherLastname).append(" ");
+
+    if (motherLastname.isPresent()) {
+      name.append(motherLastname.get())
+          .append(" ");
+    }
+
+    return name.toString();
   }
 
   @Override
@@ -131,25 +161,5 @@ public class Signatary implements ISignatary {
         .append(getFullName());
 
     return str.toString();
-  }
-
-  @Override
-  public String getFullName() {
-    StringBuilder name = new StringBuilder(firstName)
-        .append(" ");
-
-    if (midName != null) {
-      name.append(midName)
-          .append(" ");
-    }
-
-    name.append(fatherLastname).append(" ");
-
-    if (motherLastname != null) {
-      name.append(motherLastname)
-          .append(" ");
-    }
-
-    return name.toString();
   }
 }

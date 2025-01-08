@@ -1,20 +1,15 @@
 package org.conagua.common.model.entity;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-/**
- * Clase que representa el resultado de una busqueda
- * paginada y que permite almacenar un criterio de
- * busqueda
- */
-public class Search {
+public class Search<T, C> {
   long totalPages;
   long currentPage;
-  Criteria criteria;
-  List<IEntity> result;
+  C criteria;
+  Optional<List<T>> result;
 
-  public Search(long totalPages, long currentPage, Criteria criteria, List<IEntity> result) {
+  public Search(long totalPages, long currentPage, C criteria, Optional<List<T>> result) {
     int errors = 0;
     StringBuilder str = new StringBuilder();
     if (totalPages <= 0) {
@@ -37,19 +32,23 @@ public class Search {
     this.result = result;
   }
 
-  public Search(long totalPages, long currentPage, Criteria criteria) {
-    this(totalPages, currentPage, criteria, new ArrayList<>());
+  public Search(long totalPages, long currentPage, C criteria, List<T> result) {
+    this(totalPages, currentPage, criteria, Optional.of(result));
+  }
+
+  public Search(long totalPages, long currentPage, C criteria) {
+    this(totalPages, currentPage, criteria, Optional.empty());
   }
 
   public void setCurrentPage(long currentPage) {
     this.currentPage = currentPage;
   }
 
-  public List<IEntity> getResult() {
+  public Optional<List<T>> getResult() {
     return result;
   }
 
-  public Criteria getCriteria() {
+  public C getCriteria() {
     return criteria;
   }
 

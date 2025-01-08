@@ -1,32 +1,34 @@
 package org.conagua.signataries.model.entity;
 
-import org.conagua.common.model.entity.Criteria;
+import java.util.Optional;
+import org.conagua.common.model.entity.StringCriteria;
 
-public class SignataryCriteria implements Criteria {
-  public Boolean active;
-  public String firstName;
-  public String midName;
-  public String fatherLastname;
-  public String motherLastname;
+public class SignataryCriteria {
+  public Optional<Boolean> active;
+  public Optional<StringCriteria> firstName;
+  public Optional<StringCriteria> midName;
+  public Optional<StringCriteria> fatherLastname;
+  public Optional<StringCriteria> motherLastname;
 
   public SignataryCriteria() {
+    this(
+        Optional.empty(),
+        Optional.empty(),
+        Optional.empty(),
+        Optional.empty(),
+        Optional.empty());
   }
 
-  public SignataryCriteria(String firstName, String midName, String fatherLastname, String motherLastname,
-      Boolean active) {
+  public SignataryCriteria(
+      Optional<StringCriteria> firstName,
+      Optional<StringCriteria> midName,
+      Optional<StringCriteria> fatherLastname,
+      Optional<StringCriteria> motherLastname,
+      Optional<Boolean> active) {
     this.active = active;
     this.firstName = firstName;
     this.midName = midName;
     this.motherLastname = motherLastname;
     this.fatherLastname = fatherLastname;
-  }
-
-  @Override
-  public boolean isEmpty() {
-    return active == null &&
-        firstName == null &&
-        midName == null &&
-        fatherLastname == null &&
-        motherLastname == null;
   }
 }

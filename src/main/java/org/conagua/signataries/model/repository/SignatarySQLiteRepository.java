@@ -4,21 +4,10 @@ import java.sql.*;
 import java.util.*;
 
 import org.conagua.common.model.entity.*;
-import org.conagua.common.model.exceptions.*;
-import org.conagua.common.model.repository.*;
-
 import org.conagua.signataries.model.entity.*;
+import org.conagua.common.model.repository.SQLiteRepository;
 
-/**
- * Implementación de un repositorio para manejar entidades de tipo Signatary
- * en una base de datos SQLite.
- * 
- * Esta clase extiende {@link SQLiteRepository} y proporciona métodos
- * específicos
- * para operaciones CRUD y búsquedas avanzadas relacionadas con la tabla
- * "Signataries".
- */
-public class SignatarySQLiteRepository extends SQLiteRepository {
+public class SignatarySQLiteRepository extends SQLiteRepository<ISignatary, SignataryCriteria> {
   public SignatarySQLiteRepository() {
     super("Signataries");
   }
@@ -46,12 +35,6 @@ public class SignatarySQLiteRepository extends SQLiteRepository {
   }
 
   @Override
-  public void checkInstance(IEntity obj) throws InvalidInstanceException {
-    if (obj instanceof ISignatary == false)
-      throw new InvalidInstanceException("Se debe tener una instancia ISignatary");
-  }
-
-  @Override
   public String[] getColumnsWithoutId() {
     String[] arr = {
         "active",
@@ -70,22 +53,20 @@ public class SignatarySQLiteRepository extends SQLiteRepository {
   }
 
   @Override
-  public String[] fieldsWithoutId(IEntity obj) {
-    ISignatary sig = (ISignatary) obj;
-
+  public String[] fieldsWithoutId(ISignatary s) {
     String[] values = {
-        Boolean.toString(sig.isActive()),
-        sig.getFirstName(),
-        sig.getMidName(),
-        sig.getFatherLastname(),
-        sig.getMotherLastname()
+        Boolean.toString(s.isActive()),
+        s.getFirstName(),
+        s.getMidName().isPresent() ? s.getMidName().get() : null,
+        s.getFatherLastname(),
+        s.getMotherLastname().isPresent() ? s.getMidName().get() : null
     };
 
     return values;
   }
 
   @Override
-  public IEntity fromResultSet(ResultSet rs) throws SQLException {
+  public ISignatary fromResultSet(ResultSet rs) throws SQLException {
     return new Signatary(
         UUID.fromString(rs.getString("id")),
         rs.getBoolean("active"),
@@ -96,57 +77,109 @@ public class SignatarySQLiteRepository extends SQLiteRepository {
   }
 
   @Override
-  protected List<String> getConditions(Criteria criteria) throws IllegalArgumentException {
-    if (!(criteria instanceof SignataryCriteria))
-      throw new IllegalArgumentException("Criteria debe ser instancia de SignataryCriteria");
-
-    SignataryCriteria c = (SignataryCriteria) criteria;
-
+  protected List<String> getConditions(SignataryCriteria c) throws IllegalArgumentException {
     List<String> conditions = new ArrayList<>();
 
-    if (c.active != null)
+    if (c.active.isPresent()) {
       conditions.add("active=?");
+    }
 
-    if (c.midName != null)
-      conditions.add("mid_name LIKE ?");
+    if (c.midName.isPresent()) {
+      StringCriteria name = c.midName.get();
 
-    if (c.firstName != null)
-      conditions.add("first_name LIKE ?");
+      if (name.isEqMode())
+        conditions.add("mid_name = ?");
 
-    if (c.fatherLastname != null)
-      conditions.add("father_lastname LIKE ?");
+      if (name.isLikeMode())
+        conditions.add("mid_name LIKE ?");
+    }
 
-    if (c.motherLastname != null)
-      conditions.add("mother_lastname LIKE ?");
+    if (c.firstName.isPresent()) {
+      StringCriteria name = c.firstName.get();
+
+      if (name.isEqMode())
+        conditions.add("first_name = ?");
+
+      if (name.isLikeMode())
+        conditions.add("first_name LIKE ?");
+    }
+
+    if (c.fatherLastname.isPresent()) {
+      StringCriteria name = c.fatherLastname.get();
+
+      if (name.isEqMode())
+        conditions.add("father_lastname = ?");
+
+      if (name.isLikeMode())
+        conditions.add("father_lastname LIKE ?");
+    }
+
+    if (c.motherLastname.isPresent()) {
+      StringCriteria name = c.motherLastname.get();
+
+      if (name.isEqMode())
+        conditions.add("mother_lastname = ?");
+
+      if (name.isLikeMode())
+        conditions.add("mother_lastname LIKE ?");
+
+    }
 
     return conditions;
   }
 
   @Override
-  protected QueryData criteriaQuery(String query, Criteria criteria, Long offset) throws SQLException {
+  protected QueryData criteriaQuery(String query, SignataryCriteria criteria, Long offset) throws SQLException {
     Connection conn = DriverManager.getConnection(cfg.getDbUrl());
     PreparedStatement pstmt = conn.prepareStatement(query);
 
     int paramIndex = 1;
 
-    // Configuración de parámetros dinámicos
-    if (!criteria.isEmpty()) {
-      SignataryCriteria c = (SignataryCriteria) criteria;
+    SignataryCriteria c = (SignataryCriteria) criteria;
 
-      if (c.active != null)
-        pstmt.setString(paramIndex++, c.active.toString());
+    if (c.active.isPresent()) {
+      Boolean active = c.active.get();
+      pstmt.setString(paramIndex++, active.toString());
+    }
 
-      if (c.firstName != null)
-        pstmt.setString(paramIndex++, "%" + c.firstName + "%");
+    if (c.firstName.isPresent()) {
+      StringCriteria name = c.firstName.get();
 
-      if (c.midName != null)
-        pstmt.setString(paramIndex++, "%" + c.midName + "%");
+      if (name.isLikeMode())
+        pstmt.setString(paramIndex++, "%" + name.getValue() + "%");
 
-      if (c.fatherLastname != null)
-        pstmt.setString(paramIndex++, "%" + c.fatherLastname + "%");
+      if (name.isEqMode())
+        pstmt.setString(paramIndex++, name.getValue());
+    }
 
-      if (c.motherLastname != null)
-        pstmt.setString(paramIndex++, "%" + c.motherLastname + "%");
+    if (c.midName.isPresent()) {
+      StringCriteria name = c.midName.get();
+
+      if (name.isLikeMode())
+        pstmt.setString(paramIndex++, "%" + name.getValue() + "%");
+
+      if (name.isEqMode())
+        pstmt.setString(paramIndex++, name.getValue());
+    }
+
+    if (c.fatherLastname.isPresent()) {
+      StringCriteria name = c.fatherLastname.get();
+
+      if (name.isLikeMode())
+        pstmt.setString(paramIndex++, "%" + name.getValue() + "%");
+
+      if (name.isEqMode())
+        pstmt.setString(paramIndex++, name.getValue());
+    }
+
+    if (c.motherLastname.isPresent()) {
+      StringCriteria name = c.motherLastname.get();
+
+      if (name.isLikeMode())
+        pstmt.setString(paramIndex++, "%" + name.getValue() + "%");
+
+      if (name.isEqMode())
+        pstmt.setString(paramIndex++, name.getValue());
     }
 
     if (offset != null) {

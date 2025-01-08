@@ -1,11 +1,6 @@
 package org.conagua.common.controller;
 
-/**
- * Clase que brinda metodos comunmente usados en controladores
- *
- * @implements {@link IController}
- */
-public abstract class Controller implements IController {
+public class StringUtilities {
   /*
    * Convierte en mayúscula el primer caracter de una cadena de
    * texto

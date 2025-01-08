@@ -1,24 +1,31 @@
 package org.conagua.signataries.model.entity;
 
-public class NewSignatary implements INewSignatary {
-  private String motherLastname;
-  private String fatherLastname;
-  private String midName;
-  private String firstName;
+import java.util.Optional;
 
-  public NewSignatary(String firstName, String midName, String fatherLastname, String motherLastname) {
+public class NewSignatary implements INewSignatary {
+  private String firstName;
+  private String fatherLastname;
+  private Optional<String> motherLastname;
+  private Optional<String> midName;
+
+  public NewSignatary(String firstName, Optional<String> midName, String fatherLastname,
+      Optional<String> motherLastname) {
     this.firstName = firstName;
     this.midName = midName;
     this.fatherLastname = fatherLastname;
     this.motherLastname = motherLastname;
   }
 
+  public NewSignatary(String firstName, String midName, String fatherLastname, String motherLastname) {
+    this(firstName, Optional.of(midName), fatherLastname, Optional.of(motherLastname));
+  }
+
   public NewSignatary(String firstName, String fatherLastname, String motherLastname) {
-    this(firstName, null, fatherLastname, motherLastname);
+    this(firstName, Optional.empty(), fatherLastname, Optional.of(motherLastname));
   }
 
   public NewSignatary(String firstName, String fatherLastname) {
-    this(firstName, null, fatherLastname, null);
+    this(firstName, Optional.empty(), fatherLastname, Optional.empty());
   }
 
   @Override
@@ -32,12 +39,12 @@ public class NewSignatary implements INewSignatary {
   }
 
   @Override
-  public String getMidName() {
+  public Optional<String> getMidName() {
     return midName;
   }
 
   @Override
-  public String getMotherLastname() {
+  public Optional<String> getMotherLastname() {
     return motherLastname;
   }
 }
