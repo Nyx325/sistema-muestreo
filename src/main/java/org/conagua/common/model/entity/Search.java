@@ -3,6 +3,11 @@ package org.conagua.common.model.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Clase que representa el resultado de una busqueda
+ * paginada y que permite almacenar un criterio de
+ * busqueda
+ */
 public class Search {
   long totalPages;
   long currentPage;

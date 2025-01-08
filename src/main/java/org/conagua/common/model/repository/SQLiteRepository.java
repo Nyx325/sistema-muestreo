@@ -14,6 +14,8 @@ import org.conagua.common.model.exceptions.TableNotExistsException;
  * operaciones básicas sobre una tabla de base de datos. Las subclases deben
  * implementar los métodos abstractos para adaptarse a las entidades específicas
  * y la estructura de la tabla.
+ *
+ * @implements {@link IRepository}
  */
 public abstract class SQLiteRepository implements IRepository {
   /**
@@ -147,7 +149,7 @@ public abstract class SQLiteRepository implements IRepository {
   }
 
   @Override
-  public IEntity get(UUID id) throws SQLException, InvalidInstanceException {
+  public IEntity get(UUID id) throws SQLException {
     if (!tableExists())
       createTable();
 

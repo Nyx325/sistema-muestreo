@@ -30,7 +30,7 @@ public class StandardController implements IController {
   @Override
   public void add(INewEntity data) throws InputMismatchException, Exception {
     if (!(data instanceof INewStandard))
-      throw new InputMismatchException("data debe ser instancia de IStandard");
+      throw new InputMismatchException("data debe ser instancia de INewStandard");
 
     INewStandard newStd = (INewStandard) data;
 

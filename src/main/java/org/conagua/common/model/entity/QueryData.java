@@ -2,6 +2,13 @@ package org.conagua.common.model.entity;
 
 import java.sql.*;
 
+/**
+ * Clase que agrupa una conexión a base de datos, un
+ * prepared statement y un result set para ser manipulados
+ * y cerrados en caso de ocurrir alguna excepción.
+ *
+ * @implements {@link AutoCloseable}
+ */
 public class QueryData implements AutoCloseable {
   private Connection conn;
   private PreparedStatement pstmt;

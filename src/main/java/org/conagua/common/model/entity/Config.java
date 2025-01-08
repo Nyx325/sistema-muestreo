@@ -1,5 +1,9 @@
 package org.conagua.common.model.entity;
 
+/**
+ * Clase que contiene variables de configuracion
+ * utilizadas dentro del sistema
+ */
 public class Config {
   private static Config instance;
 

@@ -4,6 +4,7 @@ import java.util.InputMismatchException;
 import java.util.UUID;
 
 import org.conagua.common.model.entity.*;
+import org.conagua.common.model.exceptions.NotFoundException;
 
 /**
  * Interfaz genérica que define operaciones básicas para un controlador que
@@ -36,27 +37,30 @@ public interface IController {
    * 
    * @param data La entidad con los datos actualizados.
    * @throws InputMismatchException Si los datos proporcionados son inválidos.
+   * @throws NotFoundException      Si no se encontró el registro a modificar.
    * @throws Exception              Para errores generales durante la operación.
    */
-  public void update(IEntity data) throws InputMismatchException, Exception;
+  public void update(IEntity data) throws InputMismatchException, NotFoundException, Exception;
 
   /**
    * Elimina una entidad del sistema utilizando el objeto de la entidad.
    * 
    * @param data La entidad a eliminar.
    * @throws InputMismatchException Si los datos proporcionados son inválidos.
+   * @throws NotFoundException      Si no se encontró el registro a modificar.
    * @throws Exception              Para errores generales durante la operación.
    */
-  public void delete(IEntity data) throws InputMismatchException, Exception;
+  public void delete(IEntity data) throws InputMismatchException, NotFoundException, Exception;
 
   /**
    * Elimina una entidad del sistema utilizando su identificador único.
    * 
    * @param id El identificador único de la entidad a eliminar.
    * @throws InputMismatchException Si el identificador proporcionado es inválido.
+   * @throws NotFoundException      Si no se encontró el registro a modificar.
    * @throws Exception              Para errores generales durante la operación.
    */
-  public void delete(UUID id) throws InputMismatchException, Exception;
+  public void delete(UUID id) throws InputMismatchException, NotFoundException, Exception;
 
   /**
    * Obtiene un conjunto de entidades que cumplen con los criterios especificados.
