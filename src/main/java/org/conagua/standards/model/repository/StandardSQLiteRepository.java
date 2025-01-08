@@ -1,6 +1,8 @@
 package org.conagua.standards.model.repository;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.conagua.common.model.entity.*;
@@ -87,6 +89,22 @@ public class StandardSQLiteRepository extends SQLiteRepository {
     if (!(criteria instanceof StandardCriteria))
       throw new IllegalArgumentException("criteria debe ser de tipo SignataryCriteria");
 
-    return null;
+    StandardCriteria c = (StandardCriteria) criteria;
+
+    List<String> conditions = new ArrayList<>();
+    if (c.active != null)
+      conditions.add("active = ?");
+
+    if (c.name != null)
+      conditions.add("name LIKE ?");
+
+    StringBuilder whereQuery = new StringBuilder();
+    if (!conditions.isEmpty())
+      whereQuery.append(" WHERE ").append(String.join(" AND ", conditions));
+
+    long totalPages = totalPagesQuery(whereQuery.toString(), c);
+  }
+
+  private long totalPagesQuery(String whereQuery, StandardCriteria criteria) throws SQLException {
   }
 }

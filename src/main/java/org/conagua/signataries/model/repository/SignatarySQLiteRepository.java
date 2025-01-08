@@ -132,31 +132,6 @@ public class SignatarySQLiteRepository extends SQLiteRepository {
   }
 
   /**
-   * Calcula el número total de páginas basado en los criterios de búsqueda.
-   * 
-   * @param whereQuery La consulta SQL con las condiciones de búsqueda.
-   * @param criteria   Los criterios de búsqueda.
-   * @return El número total de páginas.
-   * @throws SQLException Si ocurre un error al ejecutar la consulta SQL.
-   */
-  private long totalPagesQuery(String whereQuery, SignataryCriteria criteria) throws SQLException {
-    StringBuilder query = new StringBuilder("SELECT COUNT(*) ")
-        .append(" FROM ")
-        .append(tableName)
-        .append(whereQuery);
-
-    try (QueryData queryData = this.criteriaQuery(query.toString(), criteria, null)) {
-
-      if (!queryData.getRs().next())
-        throw new SQLException("El resultado de un COUNT(*) deberia ser un número");
-
-      long totalRecords = queryData.getRs().getLong(1);
-      long totalPages = (long) Math.ceil((double) totalRecords / cfg.getPageSize());
-      return totalPages == 0 ? 1 : totalPages;
-    }
-  }
-
-  /**
    * Ejecuta una consulta para recuperar los resultados de búsqueda.
    * 
    * @param whereQuery La consulta SQL con las condiciones de búsqueda.
@@ -194,14 +169,18 @@ public class SignatarySQLiteRepository extends SQLiteRepository {
 
   /**
    * Ejecuta una consulta SQL basada en los criterios proporcionados.
+   * recibe un offset el cual puede ser null, sin embargo el que este
+   * valor sea null significa que no se pretende paginar la busqueda,
+   * es decir se omite un LIMIT y un OFFSET necesario para el conteo
+   * total de registros existentes para obtener numero de paginas
    * 
    * @param query    La consulta SQL.
    * @param criteria Los criterios de búsqueda.
    * @param offset   El desplazamiento para la paginación (puede ser null).
-   * @return Un {@link ResultSet} con los resultados de la consulta.
+   * @return Un {@link QueryData} con los resultados de la consulta.
    * @throws SQLException Si ocurre un error al ejecutar la consulta SQL.
    */
-  private QueryData criteriaQuery(String query, SignataryCriteria criteria, Long offset) throws SQLException {
+  protected QueryData criteriaQuery(String query, Criteria criteria, Long offset) throws SQLException {
     Connection conn = DriverManager.getConnection(cfg.getDbUrl());
     PreparedStatement pstmt = conn.prepareStatement(query); // en esta linea sucede la excepcion
 
