@@ -1,6 +1,8 @@
 package org.conagua.common.model.repository;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.conagua.common.model.entity.*;
@@ -206,6 +208,21 @@ public abstract class SQLiteRepository implements IRepository {
     }
   }
 
+  @Override
+  public Search getBy(Criteria criteria, long page) throws Exception {
+    if (page <= 0)
+      throw new IllegalArgumentException("El número de página debe ser mayor que 0");
+
+    List<String> conditions = getConditions(criteria);
+
+    StringBuilder whereQuery = new StringBuilder();
+    if (!conditions.isEmpty())
+      whereQuery.append(" WHERE ").append(String.join(" AND ", conditions));
+
+    long totalPages = totalPagesQuery(whereQuery.toString(), criteria);
+    return searchQuery(whereQuery.toString(), criteria, page, totalPages);
+  }
+
   /**
    * Calcula el número total de páginas basado en los criterios de búsqueda.
    * 
@@ -232,6 +249,42 @@ public abstract class SQLiteRepository implements IRepository {
   }
 
   /**
+   * Ejecuta una consulta para recuperar los resultados de búsqueda.
+   * 
+   * @param whereQuery La consulta SQL con las condiciones de búsqueda.
+   * @param criteria   Los criterios de búsqueda.
+   * @param page       La página actual.
+   * @param totalPages El número total de páginas.
+   * @return Un objeto {@link Search} con los resultados.
+   * @throws SQLException Si ocurre un error al ejecutar la consulta SQL.
+   */
+  protected Search searchQuery(String whereQuery, Criteria criteria, long page, long totalPages)
+      throws SQLException {
+    long pageSize = cfg.getPageSize();
+    long offset = (page - 1) * pageSize;
+    String[] columns = getColumnsWithoutId();
+
+    StringBuilder query = new StringBuilder("SELECT ")
+        .append(idField()).append(",")
+        .append(String.join(",", columns))
+        .append(" FROM ")
+        .append(tableName)
+        .append(whereQuery)
+        .append(" LIMIT ?")
+        .append(" OFFSET ?");
+
+    try (QueryData queryData = this.criteriaQuery(query.toString(), criteria, offset)) {
+      List<IEntity> result = new ArrayList<>();
+      while (queryData.getRs().next()) {
+        IEntity s = fromResultSet(queryData.getRs());
+        result.add(s);
+      }
+
+      return new Search(totalPages, page, criteria, result);
+    }
+  }
+
+  /**
    * Ejecuta y sustituye los valores en un {@link PreparedStatement} de
    * una consulta SQL basada en los criterios proporcionados.
    * Recibe un offset el cual puede ser null, sin embargo el que este
@@ -246,6 +299,19 @@ public abstract class SQLiteRepository implements IRepository {
    * @throws SQLException Si ocurre un error al ejecutar la consulta SQL.
    */
   protected abstract QueryData criteriaQuery(String query, Criteria criteria, Long offset) throws SQLException;
+
+  /**
+   * Genera una lista de cadenas correspondientes a los campos que se
+   * brindan en el criterio.
+   *
+   * Ej. [ "active = ?", "id = ?" ]
+   * 
+   * @param criteria el criterio de la busqueda
+   * @return Lista de campos a sustituir en la busqueda
+   * @throws IllegalArgumentException si se brinda una instancia incorrecta de
+   *                                  {@link Criteria}
+   */
+  protected abstract List<String> getConditions(Criteria criteria) throws IllegalArgumentException;
 
   /**
    * Crea la tabla asociada al repositorio si no existe.

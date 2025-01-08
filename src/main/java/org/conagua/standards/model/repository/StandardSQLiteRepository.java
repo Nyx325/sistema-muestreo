@@ -103,8 +103,6 @@ public class StandardSQLiteRepository extends SQLiteRepository {
       whereQuery.append(" WHERE ").append(String.join(" AND ", conditions));
 
     long totalPages = totalPagesQuery(whereQuery.toString(), c);
-  }
-
-  private long totalPagesQuery(String whereQuery, StandardCriteria criteria) throws SQLException {
+    return searchQuery(whereQuery.toString(), criteria, page, totalPages);
   }
 }

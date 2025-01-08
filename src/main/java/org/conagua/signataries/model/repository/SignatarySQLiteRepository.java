@@ -96,121 +96,41 @@ public class SignatarySQLiteRepository extends SQLiteRepository {
   }
 
   @Override
-  public Search getBy(Criteria criteria, long page) throws Exception {
-    if (page <= 0)
-      throw new IllegalArgumentException("El número de página debe ser mayor que 0");
-
+  protected List<String> getConditions(Criteria criteria) throws IllegalArgumentException {
     if (!(criteria instanceof SignataryCriteria))
-      throw new IllegalArgumentException("criteria debe ser de tipo SignataryCriteria");
+      throw new IllegalArgumentException("Criteria debe ser instancia de SignataryCriteria");
 
     SignataryCriteria c = (SignataryCriteria) criteria;
 
     List<String> conditions = new ArrayList<>();
-    if (c.active != null)
-      conditions.add("active = ?");
 
-    if (c.firstName != null)
-      conditions.add("first_name LIKE ?");
+    if (c.active != null)
+      conditions.add("active");
 
     if (c.midName != null)
-      conditions.add("mid_name LIKE ?");
+      conditions.add("mid_name");
+
+    if (c.firstName != null)
+      conditions.add("first_name");
 
     if (c.fatherLastname != null)
-      conditions.add("father_lastname LIKE ?");
+      conditions.add("father_lastname");
 
     if (c.motherLastname != null)
-      conditions.add("mother_lastname LIKE ?");
+      conditions.add("mother_lastname");
 
-    StringBuilder whereQuery = new StringBuilder();
-    if (!conditions.isEmpty()) {
-      whereQuery.append(" WHERE ").append(String.join(" AND ", conditions));
-    }
-
-    long totalPages = totalPagesQuery(whereQuery.toString(), c);
-    return searchQuery(whereQuery.toString(), c, page, totalPages);
-
+    return conditions;
   }
 
-  /**
-   * Ejecuta una consulta para recuperar los resultados de búsqueda.
-   * 
-   * @param whereQuery La consulta SQL con las condiciones de búsqueda.
-   * @param criteria   Los criterios de búsqueda.
-   * @param page       La página actual.
-   * @param totalPages El número total de páginas.
-   * @return Un objeto {@link Search} con los resultados.
-   * @throws SQLException Si ocurre un error al ejecutar la consulta SQL.
-   */
-  private Search searchQuery(String whereQuery, SignataryCriteria criteria, long page, long totalPages)
-      throws SQLException {
-    long pageSize = cfg.getPageSize();
-    long offset = (page - 1) * pageSize;
-    String[] columns = getColumnsWithoutId();
-
-    StringBuilder query = new StringBuilder("SELECT ")
-        .append(idField()).append(",")
-        .append(String.join(",", columns))
-        .append(" FROM ")
-        .append(tableName)
-        .append(whereQuery)
-        .append(" LIMIT ?")
-        .append(" OFFSET ?");
-
-    try (QueryData queryData = this.criteriaQuery(query.toString(), criteria, offset)) {
-      List<IEntity> result = new ArrayList<>();
-      while (queryData.getRs().next()) {
-        IEntity s = fromResultSet(queryData.getRs());
-        result.add(s);
-      }
-
-      return new Search(totalPages, page, criteria, result);
-    }
-  }
-
-  /**
-   * Ejecuta una consulta SQL basada en los criterios proporcionados.
-   * recibe un offset el cual puede ser null, sin embargo el que este
-   * valor sea null significa que no se pretende paginar la busqueda,
-   * es decir se omite un LIMIT y un OFFSET necesario para el conteo
-   * total de registros existentes para obtener numero de paginas
-   * 
-   * @param query    La consulta SQL.
-   * @param criteria Los criterios de búsqueda.
-   * @param offset   El desplazamiento para la paginación (puede ser null).
-   * @return Un {@link QueryData} con los resultados de la consulta.
-   * @throws SQLException Si ocurre un error al ejecutar la consulta SQL.
-   */
+  @Override
   protected QueryData criteriaQuery(String query, Criteria criteria, Long offset) throws SQLException {
-    Connection conn = DriverManager.getConnection(cfg.getDbUrl());
-    PreparedStatement pstmt = conn.prepareStatement(query); // en esta linea sucede la excepcion
+    if (!(criteria instanceof SignataryCriteria))
+      throw new IllegalArgumentException("Criteria debe ser instancia de SignataryCriteria");
 
-    int paramIndex = 1;
+    try (Connection conn = DriverManager.getConnection(cfg.getDbUrl());
+        PreparedStatement pstmt = conn.prepareStatement(query)) {
 
-    // Configuración de parámetros dinámicos
-    if (!criteria.isEmpty()) {
-      SignataryCriteria c = (SignataryCriteria) criteria;
-
-      if (c.active != null)
-        pstmt.setString(paramIndex++, c.active.toString());
-
-      if (c.firstName != null)
-        pstmt.setString(paramIndex++, "%" + c.firstName + "%");
-
-      if (c.midName != null)
-        pstmt.setString(paramIndex++, "%" + c.midName + "%");
-
-      if (c.fatherLastname != null)
-        pstmt.setString(paramIndex++, "%" + c.fatherLastname + "%");
-
-      if (c.motherLastname != null)
-        pstmt.setString(paramIndex++, "%" + c.motherLastname + "%");
     }
-
-    if (offset != null) {
-      pstmt.setLong(paramIndex++, cfg.getPageSize());
-      pstmt.setLong(paramIndex, offset);
-    }
-
-    return new QueryData(conn, pstmt, pstmt.executeQuery());
+    return null;
   }
 }
