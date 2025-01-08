@@ -59,7 +59,6 @@ public class Standard implements IStandard {
   @Override
   public String[] attributesToArray() {
     String[] fields = {
-        id.toString(),
         name.toString()
     };
 

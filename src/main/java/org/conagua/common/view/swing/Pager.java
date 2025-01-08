@@ -1,4 +1,4 @@
-package org.conagua.common.adapter.gui;
+package org.conagua.common.view.swing;
 
 import java.util.List;
 import java.awt.FlowLayout;
@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import javax.swing.JButton;
 
-import org.conagua.common.domain.Search;
+import org.conagua.common.model.entity.Search;
 
 public class Pager extends Component implements IRefreshable {
   private final PagedTable table;

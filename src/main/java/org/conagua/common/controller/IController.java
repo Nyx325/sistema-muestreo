@@ -29,7 +29,7 @@ public interface IController {
    * @throws InputMismatchException Si los datos proporcionados son inválidos.
    * @throws Exception              Para errores generales durante la operación.
    */
-  public void add(IEntity data) throws InputMismatchException, Exception;
+  public void add(INewEntity data) throws InputMismatchException, Exception;
 
   /**
    * Actualiza una entidad existente en el sistema.

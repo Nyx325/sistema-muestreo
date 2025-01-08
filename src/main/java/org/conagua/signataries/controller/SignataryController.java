@@ -6,7 +6,9 @@ import org.conagua.common.model.entity.*;
 import org.conagua.common.model.exceptions.NotFoundException;
 import org.conagua.common.controller.Controller;
 import org.conagua.common.model.repository.IRepository;
+import org.conagua.signataries.model.entity.INewSignatary;
 import org.conagua.signataries.model.entity.ISignatary;
+import org.conagua.signataries.model.entity.Signatary;
 import org.conagua.signataries.model.repository.SignatarySQLiteRepository;
 
 public class SignataryController extends Controller {
@@ -36,25 +38,23 @@ public class SignataryController extends Controller {
   }
 
   @Override
-  public void add(IEntity data) throws Exception {
-    checkInstance(data);
+  public void add(INewEntity data) throws Exception {
+    if (!(data instanceof INewSignatary))
+      throw new IllegalArgumentException("data debe ser una instancia de INewSignatary");
 
     List<String> msg = new ArrayList<>();
-    ISignatary s = (ISignatary) data;
+    INewSignatary s = (INewSignatary) data;
 
-    if (s.getId() == null)
-      msg.add("se debe especificar un ID");
-
-    if (!nameValidator.compoudNameIsValid(s.getFirstName()))
+    if (!nameValidator.compoudNameIsValid(s.getFirstName().toUpperCase()))
       msg.add("el formato del primer nombre es inválido");
 
-    if (!nameValidator.singleNameIsValid(s.getMidName()))
+    if (!nameValidator.singleNameIsValid(s.getMidName().toUpperCase()))
       msg.add("el formato del segundo nombre es inválido");
 
-    if (!nameValidator.compoudNameIsValid(s.getFatherLastname()))
+    if (!nameValidator.compoudNameIsValid(s.getFatherLastname().toUpperCase()))
       msg.add("el formato del primer apellido es inválido");
 
-    if (!nameValidator.singleNameIsValid(s.getMotherLastname()))
+    if (!nameValidator.singleNameIsValid(s.getMotherLastname().toUpperCase()))
       msg.add("el formato del segundo apellido es inválido");
 
     if (msg.size() != 0) {
@@ -62,7 +62,15 @@ public class SignataryController extends Controller {
       throw new InputMismatchException(error);
     }
 
-    this.repo.add(data);
+    Signatary sig = new Signatary(
+        UUID.randomUUID(),
+        true,
+        s.getFirstName().trim().toUpperCase(),
+        s.getMidName().trim().toUpperCase(),
+        s.getFatherLastname().trim().toUpperCase(),
+        s.getMotherLastname().trim().toUpperCase());
+
+    this.repo.add(sig);
   }
 
   @Override
