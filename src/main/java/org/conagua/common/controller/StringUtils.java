@@ -1,11 +1,7 @@
 package org.conagua.common.controller;
 
-public class StringUtilities {
-  /*
-   * Convierte en mayúscula el primer caracter de una cadena de
-   * texto
-   */
-  protected String capitalizeString(String text) {
+public class StringUtils {
+  public static String capitalize(String text) {
     if (text == null || text.isEmpty())
       return text;
 

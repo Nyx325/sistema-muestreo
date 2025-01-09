@@ -65,15 +65,22 @@ public class SignatarySQLiteRepository extends SQLiteRepository<ISignatary, Sign
     return values;
   }
 
+  private Optional<String> optionalStr(String s) {
+    return s == null || s.isEmpty() ? Optional.empty() : Optional.of(s);
+  }
+
   @Override
   public ISignatary fromResultSet(ResultSet rs) throws SQLException {
+    String midName = rs.getString("mid_name");
+    String motherLastname = rs.getString("mother_lastname");
+
     return new Signatary(
         UUID.fromString(rs.getString("id")),
         rs.getBoolean("active"),
         rs.getString("first_name"),
-        rs.getString("mid_name"),
+        optionalStr(midName),
         rs.getString("father_lastname"),
-        rs.getString("mother_lastname"));
+        optionalStr(motherLastname));
   }
 
   @Override

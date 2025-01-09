@@ -45,11 +45,7 @@ public class Signatary implements ISignatary {
     this(id, true, firstName, Optional.empty(), fatherLastname, Optional.empty());
   }
 
-  public static Signatary parseSignatary(IEntity entity) {
-    if (entity instanceof ISignatary == false)
-      throw new InputMismatchException();
-
-    ISignatary s = (ISignatary) entity;
+  public static Signatary of(ISignatary s) {
     return new Signatary(
         s.getId(),
         s.isActive(),

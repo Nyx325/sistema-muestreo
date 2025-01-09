@@ -6,7 +6,7 @@ import java.util.UUID;
 import org.conagua.common.model.entity.*;
 
 public interface IController<E extends IEntity, NE, C> {
-  public Result<Optional<E>, String> get(UUID id) throws Exception;
+  public Optional<E> get(UUID id) throws Exception;
 
   public Result<E, String> add(NE data) throws Exception;
 
