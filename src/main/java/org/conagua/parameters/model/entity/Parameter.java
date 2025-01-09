@@ -1,0 +1,34 @@
+package org.conagua.parameters.model.entity;
+
+import java.util.UUID;
+
+public class Parameter implements IParameter {
+  private UUID id;
+  private boolean active;
+  private String name;
+
+  @Override
+  public UUID getId() {
+    return id;
+  }
+
+  @Override
+  public boolean isActive() {
+    return active;
+  }
+
+  @Override
+  public String getName() {
+    return name;
+  }
+
+  @Override
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  @Override
+  public void setActive(boolean active) {
+    this.active = active;
+  }
+}
