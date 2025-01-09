@@ -1,10 +1,7 @@
 package org.conagua.common.model.repository;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import org.conagua.common.model.entity.*;
 
@@ -29,10 +26,14 @@ public abstract class SQLiteRepository<E extends IEntity, C> implements IReposit
     }
   }
 
-  @Override
-  public void add(E data) throws Exception {
+  public void checkTable() throws SQLException {
     if (!tableExists())
       createTable();
+  }
+
+  @Override
+  public void add(E data) throws Exception {
+    checkTable();
 
     String[] columns = getColumnsWithoutId();
     String[] values = fieldsWithoutId(data);
@@ -66,8 +67,7 @@ public abstract class SQLiteRepository<E extends IEntity, C> implements IReposit
 
   @Override
   public void update(E data) throws SQLException {
-    if (!tableExists())
-      createTable();
+    checkTable();
 
     // Obtener los nombres de las columnas y los valores de la entidad
     String[] columns = getColumnsWithoutId();
@@ -104,8 +104,7 @@ public abstract class SQLiteRepository<E extends IEntity, C> implements IReposit
 
   @Override
   public Optional<E> get(UUID id) throws SQLException {
-    if (!tableExists())
-      createTable();
+    checkTable();
 
     String[] columns = this.getColumnsWithoutId();
     StringBuilder query = new StringBuilder("SELECT ")
@@ -133,40 +132,19 @@ public abstract class SQLiteRepository<E extends IEntity, C> implements IReposit
 
   @Override
   public void delete(UUID id) throws SQLException {
-    this.delete(id);
+    E data = get(id).get();
+    this.delete(data);
   }
 
   public void delete(E data) throws SQLException {
-    if (!tableExists())
-      createTable();
-
-    if (data instanceof ILogicalDeletable) {
-      ILogicalDeletable d = (ILogicalDeletable) data;
-      d.setActive(false);
-      this.update(data);
-      return;
-    }
-
-    StringBuilder query = new StringBuilder("DELETE FROM ")
-        .append(tableName)
-        .append(" WHERE ")
-        .append(idField())
-        .append("=?");
-
-    try (
-        Connection conn = DriverManager.getConnection(cfg.getDbUrl());
-        PreparedStatement pstmt = conn.prepareStatement(query.toString())) {
-      pstmt.setString(1, data.getId().toString());
-      pstmt.executeUpdate();
-    } catch (SQLException e) {
-      throw e;
-    }
   }
 
   @Override
   public Search<E, C> getBy(C criteria, long page) throws Exception {
     if (page <= 0)
       throw new IllegalArgumentException("El número de página debe ser mayor que 0");
+
+    checkTable();
 
     List<String> conditions = getConditions(criteria);
 
@@ -185,7 +163,7 @@ public abstract class SQLiteRepository<E extends IEntity, C> implements IReposit
         .append(tableName)
         .append(whereQuery);
 
-    try (QueryData queryData = this.criteriaQuery(query.toString(), criteria, null)) {
+    try (QueryData queryData = this.criteriaQuery(query.toString(), criteria, Optional.empty())) {
 
       if (!queryData.getRs().next())
         throw new SQLException("El resultado de un COUNT(*) deberia ser un número");
@@ -211,7 +189,7 @@ public abstract class SQLiteRepository<E extends IEntity, C> implements IReposit
         .append(" LIMIT ?")
         .append(" OFFSET ?");
 
-    try (QueryData queryData = this.criteriaQuery(query.toString(), criteria, offset)) {
+    try (QueryData queryData = this.criteriaQuery(query.toString(), criteria, Optional.of(offset))) {
       if (queryData.getRs().next()) {
 
         List<E> result = new ArrayList<>();
@@ -231,7 +209,7 @@ public abstract class SQLiteRepository<E extends IEntity, C> implements IReposit
     }
   }
 
-  protected abstract QueryData criteriaQuery(String query, C criteria, Long offset) throws SQLException;
+  protected abstract QueryData criteriaQuery(String query, C criteria, Optional<Long> offset) throws SQLException;
 
   protected abstract List<String> getConditions(C criteria);
 

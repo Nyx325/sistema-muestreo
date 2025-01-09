@@ -31,4 +31,44 @@ public class SignataryCriteria {
     this.motherLastname = motherLastname;
     this.fatherLastname = fatherLastname;
   }
+
+  public Optional<Boolean> getActive() {
+    return active;
+  }
+
+  public Optional<StringCriteria> getMidName() {
+    return midName;
+  }
+
+  public Optional<StringCriteria> getFirstName() {
+    return firstName;
+  }
+
+  public Optional<StringCriteria> getFatherLastname() {
+    return fatherLastname;
+  }
+
+  public Optional<StringCriteria> getMotherLastname() {
+    return motherLastname;
+  }
+
+  public void setActive(Optional<Boolean> active) {
+    this.active = active;
+  }
+
+  public void setMidName(Optional<StringCriteria> midName) {
+    this.midName = midName;
+  }
+
+  public void setFirstName(Optional<StringCriteria> firstName) {
+    this.firstName = firstName;
+  }
+
+  public void setFatherLastname(Optional<StringCriteria> fatherLastname) {
+    this.fatherLastname = fatherLastname;
+  }
+
+  public void setMotherLastname(Optional<StringCriteria> motherLastname) {
+    this.motherLastname = motherLastname;
+  }
 }

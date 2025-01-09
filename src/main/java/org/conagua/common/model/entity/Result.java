@@ -47,6 +47,16 @@ public class Result<T, E> {
   }
 
   /**
+   * Crea un resultado de error sin valor asociado.
+   *
+   * @param <T> El tipo del valor de exitoso.
+   * @return Una instancia de Result indicando éxito sin valor.
+   */
+  public static <T> Result<T, Void> err() {
+    return new Result<>(false, null, null);
+  }
+
+  /**
    * Crea un resultado de error con un valor asociado.
    *
    * @param value El valor asociado con el error.
@@ -109,6 +119,10 @@ public class Result<T, E> {
     if (ok) {
       throw new IllegalStateException("No se puede descomponer un resultado de error de un éxito");
     }
+
+    if (!ok && errValue == null)
+      throw new IllegalStateException("No se puede descomponer un resultado erroneo de un Result<T, Void>");
+
     return errValue;
   }
 }

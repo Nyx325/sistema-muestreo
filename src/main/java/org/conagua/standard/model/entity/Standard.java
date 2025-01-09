@@ -37,4 +37,16 @@ public class Standard implements IStandard {
   public void setActive(boolean active) {
     this.active = active;
   }
+
+  @Override
+  public String toString() {
+    StringBuilder str = new StringBuilder("ID: ")
+        .append(id)
+        .append(" Activo: ")
+        .append(active)
+        .append(" Nombre: ")
+        .append(name);
+
+    return str.toString();
+  }
 }

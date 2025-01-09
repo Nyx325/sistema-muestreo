@@ -79,7 +79,7 @@ public class SignatarySQLiteRepository extends SQLiteRepository<ISignatary, Sign
 
     return new Signatary(
         UUID.fromString(rs.getString("id")),
-        rs.getBoolean("active"),
+        Boolean.parseBoolean(rs.getString("active")),
         rs.getString("first_name"),
         optionalStr(midName),
         rs.getString("father_lastname"),
@@ -139,7 +139,8 @@ public class SignatarySQLiteRepository extends SQLiteRepository<ISignatary, Sign
   }
 
   @Override
-  protected QueryData criteriaQuery(String query, SignataryCriteria criteria, Long offset) throws SQLException {
+  protected QueryData criteriaQuery(String query, SignataryCriteria criteria, Optional<Long> offset)
+      throws SQLException {
     Connection conn = DriverManager.getConnection(cfg.getDbUrl());
     PreparedStatement pstmt = conn.prepareStatement(query);
 
@@ -192,9 +193,9 @@ public class SignatarySQLiteRepository extends SQLiteRepository<ISignatary, Sign
         pstmt.setString(paramIndex++, name.getValue());
     }
 
-    if (offset != null) {
+    if (offset.isPresent()) {
       pstmt.setLong(paramIndex++, cfg.getPageSize());
-      pstmt.setLong(paramIndex, offset);
+      pstmt.setLong(paramIndex, offset.get());
     }
 
     return new QueryData(conn, pstmt, pstmt.executeQuery());
