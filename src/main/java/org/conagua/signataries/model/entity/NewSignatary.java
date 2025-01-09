@@ -8,6 +8,22 @@ public class NewSignatary implements INewSignatary {
   private Optional<String> motherLastname;
   private Optional<String> midName;
 
+  public static NewSignatary of(INewSignatary ns) {
+    return new NewSignatary(
+        ns.getFirstName(),
+        ns.getMidName(),
+        ns.getFatherLastname(),
+        ns.getMotherLastname());
+  }
+
+  public static NewSignatary of(ISignatary s) {
+    return new NewSignatary(
+        s.getFirstName(),
+        s.getMidName(),
+        s.getFatherLastname(),
+        s.getMotherLastname());
+  }
+
   public NewSignatary(String firstName, Optional<String> midName, String fatherLastname,
       Optional<String> motherLastname) {
     this.firstName = firstName;

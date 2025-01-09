@@ -54,12 +54,15 @@ public class SignatarySQLiteRepository extends SQLiteRepository<ISignatary, Sign
 
   @Override
   public String[] fieldsWithoutId(ISignatary s) {
+    String midName = s.getMidName().isPresent() ? s.getMidName().get() : null;
+    String motherLastname = s.getMotherLastname().isPresent() ? s.getMotherLastname().get() : null;
+
     String[] values = {
         Boolean.toString(s.isActive()),
         s.getFirstName(),
-        s.getMidName().isPresent() ? s.getMidName().get() : null,
+        midName,
         s.getFatherLastname(),
-        s.getMotherLastname().isPresent() ? s.getMidName().get() : null
+        motherLastname
     };
 
     return values;
