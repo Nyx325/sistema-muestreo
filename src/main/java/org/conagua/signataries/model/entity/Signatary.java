@@ -1,10 +1,8 @@
 package org.conagua.signataries.model.entity;
 
-import java.util.InputMismatchException;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.conagua.common.model.entity.IEntity;
 import org.conagua.signataries.controller.SiglasBuilder;
 
 public class Signatary implements ISignatary {

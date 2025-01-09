@@ -63,4 +63,24 @@ public class NewSignatary implements INewSignatary {
   public Optional<String> getMotherLastname() {
     return motherLastname;
   }
+
+  @Override
+  public void setMidName(Optional<String> midName) {
+    this.midName = midName;
+  }
+
+  @Override
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  @Override
+  public void setFatherLastname(String fatherLastname) {
+    this.fatherLastname = fatherLastname;
+  }
+
+  @Override
+  public void setMotherLastname(Optional<String> motherLastname) {
+    this.motherLastname = motherLastname;
+  }
 }

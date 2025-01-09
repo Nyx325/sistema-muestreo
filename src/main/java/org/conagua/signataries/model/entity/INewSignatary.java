@@ -10,4 +10,12 @@ public interface INewSignatary {
   public String getFatherLastname();
 
   public Optional<String> getMotherLastname();
+
+  public void setFirstName(String name);
+
+  public void setMidName(Optional<String> name);
+
+  public void setFatherLastname(String lastname);
+
+  public void setMotherLastname(Optional<String> lastname);
 }

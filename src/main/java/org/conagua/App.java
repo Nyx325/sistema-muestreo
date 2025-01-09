@@ -14,7 +14,7 @@ public class App {
     IController<ISignatary, INewSignatary, SignataryCriteria> ctrl = new SignataryController();
 
     System.out.println("AGREGAR");
-    NewSignatary ns = new NewSignatary("Rubén", "Román");
+    INewSignatary ns = new NewSignatary("Rubén", "Román");
     Result<ISignatary, String> result = ctrl.add(ns);
 
     if (result.isErr()) {
@@ -35,29 +35,29 @@ public class App {
     }
 
     System.out.println("ACTUALIZAR");
-    Signatary s = Signatary.of(iSig);
-    s.setFirstName("Omar");
-    s.setMotherLastname(Optional.of("Salinas"));
+    iSig.setFirstName("Omar");
+    iSig.setMotherLastname(Optional.of("Salinas"));
 
-    Result<Void, String> r2 = ctrl.update(s);
+    Result<Void, String> r2 = ctrl.update(iSig);
     if (r2.isErr()) {
       String err = r2.unwrapErr();
       System.err.println("ERROR: " + err);
     }
 
     System.out.println("ELIMINAR POR ID (LOGICO)");
-    r2 = ctrl.delete(s);
+    r2 = ctrl.delete(iSig);
     if (r2.isErr()) {
       String err = r2.unwrapErr();
       System.err.println("ERROR: " + err);
     }
 
-    System.out.println("Signatario: " + ctrl.get(s.getId()).get());
+    System.out.println("Signatario: " + ctrl.get(iSig.getId()).get());
 
     System.out.println("BUSCAR POR CRITERIO");
     SignataryCriteria criteria = new SignataryCriteriaBuilder()
         .active(false)
         .firstNameLike("OM")
+        .motherLastnameEq("Salinas")
         .build();
 
     Search<ISignatary, SignataryCriteria> search = ctrl.getBy(criteria, 1);
