@@ -3,15 +3,21 @@ package org.conagua.common.model.repository;
 import java.sql.*;
 import java.util.*;
 
+import org.conagua.common.model.configs.EnvConfig;
+import org.conagua.common.model.configs.IConfig;
 import org.conagua.common.model.entity.*;
 
 public abstract class SQLiteRepository<E extends IEntity, C> implements IRepository<E, C> {
-  protected final Config cfg;
+  protected final IConfig cfg;
   protected final String tableName;
 
-  public SQLiteRepository(String tableName) {
+  public SQLiteRepository(String tableName, IConfig config) {
     this.tableName = tableName;
-    this.cfg = Config.getInstance();
+    this.cfg = config;
+  }
+
+  public SQLiteRepository(String tableName) {
+    this(tableName, new EnvConfig());
   }
 
   public boolean tableExists() throws SQLException {

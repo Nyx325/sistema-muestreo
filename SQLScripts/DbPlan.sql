@@ -35,9 +35,11 @@ CREATE TABLE Parameters(
 
 CREATE TABLE Units(
   id UUID PRIMARY KEY NOT NULL,
-  units VARCHAR(10),
-  -- window_type ENUM("1", "2", "3")
-  window_type TEXT
+  active BOOLEAN NOT NULL, 
+  long_name TEXT NOT NULL,
+  short_name VARCHAR(10) NOT NULL,
+  window_type TEXT NOT NULL,
+  regex TEXT
 );
 
 CREATE TABLE Clients(

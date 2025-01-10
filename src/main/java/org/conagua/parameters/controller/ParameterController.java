@@ -3,18 +3,16 @@ package org.conagua.parameters.controller;
 import java.util.*;
 
 import org.conagua.common.model.entity.*;
+import org.conagua.common.controller.*;
 
-import org.conagua.common.controller.IController;
 import org.conagua.common.model.repository.IRepository;
 
 import org.conagua.parameters.model.entity.*;
 import org.conagua.parameters.model.repository.ParameterSQLiteRepository;
 
-public class ParameterController implements IController<IParameter, INewParameter, ParameterCriteria> {
-  private final IRepository<IParameter, ParameterCriteria> repo;
-
+public class ParameterController extends Controller<IParameter, INewParameter, ParameterCriteria> {
   public ParameterController(IRepository<IParameter, ParameterCriteria> repo) {
-    this.repo = repo;
+    super(repo);
   }
 
   public ParameterController() {

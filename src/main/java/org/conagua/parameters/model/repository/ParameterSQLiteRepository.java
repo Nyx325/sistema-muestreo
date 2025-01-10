@@ -3,6 +3,7 @@ package org.conagua.parameters.model.repository;
 import java.sql.*;
 import java.util.*;
 
+import org.conagua.common.model.configs.IConfig;
 import org.conagua.common.model.entity.QueryData;
 import org.conagua.common.model.entity.StringCriteria;
 import org.conagua.parameters.model.entity.*;
@@ -15,6 +16,10 @@ public class ParameterSQLiteRepository extends SQLiteRepository<IParameter, Para
 
   public ParameterSQLiteRepository(String tableName) {
     super(tableName);
+  }
+
+  public ParameterSQLiteRepository(IConfig config) {
+    super("Parameters", config);
   }
 
   @Override
