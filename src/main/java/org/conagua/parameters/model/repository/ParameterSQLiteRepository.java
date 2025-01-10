@@ -22,6 +22,10 @@ public class ParameterSQLiteRepository extends SQLiteRepository<IParameter, Para
     super("Parameters", config);
   }
 
+  public ParameterSQLiteRepository(String tableName, IConfig config) {
+    super(tableName, config);
+  }
+
   @Override
   public void createTable() throws SQLException {
     StringBuilder query = new StringBuilder("CREATE TABLE IF NOT EXISTS ")

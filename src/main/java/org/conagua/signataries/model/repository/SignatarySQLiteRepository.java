@@ -2,9 +2,10 @@ package org.conagua.signataries.model.repository;
 
 import java.sql.*;
 import java.util.*;
-
 import org.conagua.common.model.entity.*;
 import org.conagua.signataries.model.entity.*;
+
+import org.conagua.common.model.configs.IConfig;
 import org.conagua.common.model.repository.SQLiteRepository;
 
 public class SignatarySQLiteRepository extends SQLiteRepository<ISignatary, SignataryCriteria> {
@@ -14,6 +15,14 @@ public class SignatarySQLiteRepository extends SQLiteRepository<ISignatary, Sign
 
   public SignatarySQLiteRepository(String tableName) {
     super(tableName);
+  }
+
+  public SignatarySQLiteRepository(IConfig config) {
+    super("Signataries", config);
+  }
+
+  public SignatarySQLiteRepository(String tableName, IConfig config) {
+    super(tableName, config);
   }
 
   @Override

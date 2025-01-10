@@ -1,17 +1,14 @@
 package org.conagua;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import org.conagua.common.model.entity.*;
+import org.conagua.parameters.controller.*;
+import org.conagua.parameters.model.entity.*;
+import org.conagua.parameters.model.repository.*;
 
 import org.conagua.common.controller.IController;
 import org.conagua.common.model.configs.TestConfig;
-import org.conagua.common.model.entity.ILogicalDeletable;
-import org.conagua.common.model.entity.Result;
-import org.conagua.common.model.entity.Search;
 import org.conagua.common.model.repository.IRepository;
-import org.conagua.parameters.model.entity.*;
-import org.conagua.parameters.model.repository.*;
-import org.conagua.parameters.controller.*;
 
 public class App {
   IController<IParameter, INewParameter, ParameterCriteria> ctrl;

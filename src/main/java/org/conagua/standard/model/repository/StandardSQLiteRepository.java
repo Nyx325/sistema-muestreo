@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.conagua.common.model.configs.IConfig;
 import org.conagua.common.model.entity.QueryData;
 import org.conagua.common.model.entity.StringCriteria;
 import org.conagua.common.model.repository.SQLiteRepository;
@@ -18,6 +19,14 @@ public class StandardSQLiteRepository extends SQLiteRepository<IStandard, Standa
 
   public StandardSQLiteRepository(String tableName) {
     super(tableName);
+  }
+
+  public StandardSQLiteRepository(IConfig config) {
+    super("Parameters", config);
+  }
+
+  public StandardSQLiteRepository(String tableName, IConfig config) {
+    super(tableName, config);
   }
 
   @Override
