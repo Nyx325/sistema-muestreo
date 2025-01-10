@@ -7,20 +7,20 @@ import org.conagua.common.controller.IController;
 import org.conagua.common.model.entity.ILogicalDeletable;
 import org.conagua.common.model.entity.Result;
 import org.conagua.common.model.entity.Search;
-import org.conagua.standard.model.entity.*;
-import org.conagua.standard.controller.*;
+import org.conagua.parameters.model.entity.*;
+import org.conagua.parameters.controller.*;
 
 public class App {
-  IController<IStandard, INewStandard, StandardCriteria> ctrl = new StandardController();
+  IController<IParameter, INewParameter, ParameterCriteria> ctrl = new ParameterController();
 
   public void print() throws Exception {
     System.out.println("MOSTRANDO TODOS LOS REGISTROS");
-    StandardCriteria criteria = new StandardCriteria();
+    ParameterCriteria criteria = new ParameterCriteria();
 
-    Search<IStandard, StandardCriteria> search = ctrl.getBy(criteria, 1);
+    Search<IParameter, ParameterCriteria> search = ctrl.getBy(criteria, 1);
     if (search.getResult().isPresent()) {
-      List<IStandard> searchResult = search.getResult().get();
-      for (IStandard iStdnatary : searchResult) {
+      List<IParameter> searchResult = search.getResult().get();
+      for (IParameter iStdnatary : searchResult) {
         System.out.println(iStdnatary);
       }
     } else {
@@ -30,32 +30,32 @@ public class App {
 
   public void probar() throws Exception {
     print();
-    List<IStandard> nuevos = agregar();
+    List<IParameter> nuevos = agregar();
     if (nuevos.isEmpty()) {
       System.err.println("No se pudieron agregar nuevos registros. Abortando.");
       return;
     }
-    IStandard obj = nuevos.get(0);
+    IParameter obj = nuevos.get(0);
     modificar(obj);
     eliminarPorId(obj);
   }
 
-  public List<IStandard> agregar() throws Exception {
+  public List<IParameter> agregar() throws Exception {
     System.out.println("AGREGAR");
-    List<IStandard> nuevos = new ArrayList<>();
-    List<INewStandard> agregados = new ArrayList<>();
+    List<IParameter> nuevos = new ArrayList<>();
+    List<INewParameter> agregados = new ArrayList<>();
 
-    agregados.add(new NewStandard("NOM-133-ADB"));
-    agregados.add(new NewStandard("NOM-134-ADB"));
-    agregados.add(new NewStandard("NOM-134-ADB"));
+    agregados.add(new NewParameter("Microbiología"));
+    agregados.add(new NewParameter("Metales Pesados"));
+    agregados.add(new NewParameter("E-Coli"));
 
-    for (INewStandard agregar : agregados) {
+    for (INewParameter agregar : agregados) {
       System.out.println("Intentando agregar: " + agregar);
-      Result<IStandard, String> result = ctrl.add(agregar);
+      Result<IParameter, String> result = ctrl.add(agregar);
       if (result.isErr()) {
         System.err.print("\nERROR: " + result.unwrapErr() + "\n");
       } else {
-        IStandard nuevo = result.unwrapOk();
+        IParameter nuevo = result.unwrapOk();
         System.out.println("SE AGREGÓ: " + nuevo);
         nuevos.add(nuevo);
       }
@@ -66,7 +66,7 @@ public class App {
     return nuevos;
   }
 
-  public void modificar(IStandard obj) throws Exception {
+  public void modificar(IParameter obj) throws Exception {
     System.out.println("MODIFICANDO: " + obj);
     obj.setName("ajdsladjlasdj");
     Result<Void, String> result = ctrl.update(obj);
@@ -78,7 +78,7 @@ public class App {
     System.out.println();
   }
 
-  public void eliminarPorId(IStandard obj) throws Exception {
+  public void eliminarPorId(IParameter obj) throws Exception {
     System.out.println("ELIMINANDO POR ID: " + obj);
     Result<Void, String> result = ctrl.delete(obj.getId());
 
@@ -95,7 +95,7 @@ public class App {
     }
   }
 
-  public void eliminar(IStandard obj) throws Exception {
+  public void eliminar(IParameter obj) throws Exception {
     System.out.println("ELIMINANDO: " + obj);
     Result<Void, String> result = ctrl.delete(obj);
 
@@ -115,16 +115,16 @@ public class App {
 
   public void buscar() throws Exception {
     System.out.println("BUSCANDO POR CRITERIO");
-    Search<IStandard, StandardCriteria> search;
-    StandardCriteria criteria = new StandardCriteriaBuilder()
+    Search<IParameter, ParameterCriteria> search;
+    ParameterCriteria criteria = new ParameterCriteriaBuilder()
         .nameLike("NOM")
         .build();
 
     search = ctrl.getBy(criteria, 1);
 
     if (search.getResult().isPresent()) {
-      List<IStandard> results = search.getResult().get();
-      for (IStandard result : results) {
+      List<IParameter> results = search.getResult().get();
+      for (IParameter result : results) {
         System.out.println(result);
       }
     } else {

@@ -37,4 +37,17 @@ public class Parameter implements IParameter {
   public void setActive(boolean active) {
     this.active = active;
   }
+
+  @Override
+  public String toString() {
+    StringBuilder str = new StringBuilder()
+        .append("ID: ")
+        .append(id)
+        .append(" Activo: ")
+        .append(active)
+        .append(" Nombre: ")
+        .append(name);
+
+    return str.toString();
+  }
 }
