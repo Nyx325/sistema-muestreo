@@ -148,14 +148,12 @@ public class SignatarySQLiteRepository extends SQLiteRepository<ISignatary, Sign
   }
 
   @Override
-  protected QueryData criteriaQuery(String query, SignataryCriteria criteria, Optional<Long> offset)
+  protected QueryData criteriaQuery(String query, SignataryCriteria c, Optional<Long> offset)
       throws SQLException {
     Connection conn = DriverManager.getConnection(cfg.getDbUrl());
     PreparedStatement pstmt = conn.prepareStatement(query);
 
     int paramIndex = 1;
-
-    SignataryCriteria c = (SignataryCriteria) criteria;
 
     if (c.active.isPresent()) {
       Boolean active = c.active.get();

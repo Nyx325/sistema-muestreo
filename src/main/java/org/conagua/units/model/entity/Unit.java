@@ -11,6 +11,21 @@ public class Unit implements IUnit {
   private WindowType winT;
   private Optional<String> regex;
 
+  public Unit(
+      UUID id,
+      boolean active,
+      String longName,
+      String shortName,
+      WindowType type,
+      Optional<String> regex) {
+    this.id = id;
+    this.active = active;
+    this.longName = longName;
+    this.shortName = shortName;
+    this.winT = type;
+    this.regex = regex;
+  }
+
   @Override
   public WindowType getWindowType() {
     return winT;
@@ -64,5 +79,21 @@ public class Unit implements IUnit {
   @Override
   public void setActive(boolean active) {
     this.active = active;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder str = new StringBuilder("ID ")
+        .append(id)
+        .append(" ")
+        .append(longName)
+        .append("(")
+        .append(shortName)
+        .append(") Tipo Ventana: ")
+        .append(winT.toString())
+        .append(" regex: ")
+        .append(regex.isPresent() ? regex.get() : "None");
+
+    return str.toString();
   }
 }

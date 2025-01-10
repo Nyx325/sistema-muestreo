@@ -4,10 +4,10 @@ import java.util.*;
 
 import org.conagua.common.model.entity.*;
 import org.conagua.common.controller.*;
+import org.conagua.parameters.model.entity.*;
 
 import org.conagua.common.model.repository.IRepository;
 
-import org.conagua.parameters.model.entity.*;
 import org.conagua.parameters.model.repository.ParameterSQLiteRepository;
 
 public class ParameterController extends Controller<IParameter, INewParameter, ParameterCriteria> {

@@ -2,31 +2,31 @@ package org.conagua;
 
 import java.util.*;
 import org.conagua.common.model.entity.*;
-import org.conagua.parameters.controller.*;
-import org.conagua.parameters.model.entity.*;
-import org.conagua.parameters.model.repository.*;
+import org.conagua.units.controller.*;
+import org.conagua.units.model.entity.*;
+import org.conagua.units.model.repository.*;
 
 import org.conagua.common.controller.IController;
 import org.conagua.common.model.configs.TestConfig;
 import org.conagua.common.model.repository.IRepository;
 
 public class App {
-  IController<IParameter, INewParameter, ParameterCriteria> ctrl;
+  IController<IUnit, INewUnit, UnitCriteria> ctrl;
 
   public App() {
-    IRepository<IParameter, ParameterCriteria> repo;
-    repo = new ParameterSQLiteRepository(TestConfig.getInstance());
-    this.ctrl = new ParameterController(repo);
+    IRepository<IUnit, UnitCriteria> repo;
+    repo = new UnitSQLiteRepository(TestConfig.getInstance());
+    this.ctrl = new UnitController(repo);
   }
 
   public void print() throws Exception {
     System.out.println("MOSTRANDO TODOS LOS REGISTROS");
-    ParameterCriteria criteria = new ParameterCriteria();
+    UnitCriteria criteria = new UnitCriteria();
 
-    Search<IParameter, ParameterCriteria> search = ctrl.getBy(criteria, 1);
+    Search<IUnit, UnitCriteria> search = ctrl.getBy(criteria, 1);
     if (search.getResult().isPresent()) {
-      List<IParameter> searchResult = search.getResult().get();
-      for (IParameter iStdnatary : searchResult) {
+      List<IUnit> searchResult = search.getResult().get();
+      for (IUnit iStdnatary : searchResult) {
         System.out.println(iStdnatary);
       }
     } else {
@@ -36,32 +36,49 @@ public class App {
 
   public void probar() throws Exception {
     print();
-    List<IParameter> nuevos = agregar();
+    List<IUnit> nuevos = agregar();
     if (nuevos.isEmpty()) {
       System.err.println("No se pudieron agregar nuevos registros. Abortando.");
       return;
     }
-    IParameter obj = nuevos.get(0);
+    IUnit obj = nuevos.get(0);
     modificar(obj);
     eliminarPorId(obj);
   }
 
-  public List<IParameter> agregar() throws Exception {
+  public List<IUnit> agregar() throws Exception {
     System.out.println("AGREGAR");
-    List<IParameter> nuevos = new ArrayList<>();
-    List<INewParameter> agregados = new ArrayList<>();
+    List<IUnit> nuevos = new ArrayList<>();
+    List<INewUnit> agregados = new ArrayList<>();
 
-    agregados.add(new NewParameter("Microbiología"));
-    agregados.add(new NewParameter("Metales Pesados"));
-    agregados.add(new NewParameter("E-Coli"));
+    agregados.add(
+        new NewUnit(
+            "miligramos sobre litro",
+            "mg/L",
+            WindowType.TIPO1,
+            Optional.empty()));
 
-    for (INewParameter agregar : agregados) {
+    agregados.add(
+        new NewUnit(
+            "Unidades de Toxicidad",
+            "U.T.",
+            WindowType.TIPO1,
+            Optional.empty()));
+
+    agregados.add(
+        new NewUnit(
+            "Unidades de Toxicidad",
+            "U.T.",
+            WindowType.TIPO1,
+            Optional.empty()));
+
+    for (INewUnit agregar : agregados) {
       System.out.println("Intentando agregar: " + agregar);
-      Result<IParameter, String> result = ctrl.add(agregar);
+      Result<IUnit, String> result = ctrl.add(agregar);
       if (result.isErr()) {
         System.err.print("\nERROR: " + result.unwrapErr() + "\n");
       } else {
-        IParameter nuevo = result.unwrapOk();
+        IUnit nuevo = result.unwrapOk();
         System.out.println("SE AGREGÓ: " + nuevo);
         nuevos.add(nuevo);
       }
@@ -72,9 +89,9 @@ public class App {
     return nuevos;
   }
 
-  public void modificar(IParameter obj) throws Exception {
+  public void modificar(IUnit obj) throws Exception {
     System.out.println("MODIFICANDO: " + obj);
-    obj.setName("ajdsladjlasdj");
+    obj.setLongName("ajdsladjlasdj");
     Result<Void, String> result = ctrl.update(obj);
     if (result.isErr()) {
       System.err.print("\nERROR: " + result.unwrapErr() + "\n");
@@ -84,7 +101,7 @@ public class App {
     System.out.println();
   }
 
-  public void eliminarPorId(IParameter obj) throws Exception {
+  public void eliminarPorId(IUnit obj) throws Exception {
     System.out.println("ELIMINANDO POR ID: " + obj);
     Result<Void, String> result = ctrl.delete(obj.getId());
 
@@ -101,7 +118,7 @@ public class App {
     }
   }
 
-  public void eliminar(IParameter obj) throws Exception {
+  public void eliminar(IUnit obj) throws Exception {
     System.out.println("ELIMINANDO: " + obj);
     Result<Void, String> result = ctrl.delete(obj);
 
@@ -121,16 +138,16 @@ public class App {
 
   public void buscar() throws Exception {
     System.out.println("BUSCANDO POR CRITERIO");
-    Search<IParameter, ParameterCriteria> search;
-    ParameterCriteria criteria = new ParameterCriteriaBuilder()
-        .nameLike("NOM")
+    Search<IUnit, UnitCriteria> search;
+    UnitCriteria criteria = new UnitCriteriaBuilder()
+        .longNameLike("to")
         .build();
 
     search = ctrl.getBy(criteria, 1);
 
     if (search.getResult().isPresent()) {
-      List<IParameter> results = search.getResult().get();
-      for (IParameter result : results) {
+      List<IUnit> results = search.getResult().get();
+      for (IUnit result : results) {
         System.out.println(result);
       }
     } else {

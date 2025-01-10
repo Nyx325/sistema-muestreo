@@ -1,58 +1,85 @@
 package org.conagua.units.model.entity;
 
 import java.util.Optional;
-import java.util.UUID;
 
 public class NewUnit implements INewUnit {
   private String longName;
   private String shortName;
-  private String windowType;
+  private WindowType windowType;
+  private Optional<String> regex;
+
+  public NewUnit(
+      String longName,
+      String shortName,
+      WindowType windowType,
+      Optional<String> regex) {
+    this.longName = longName;
+    this.shortName = shortName;
+    this.windowType = windowType;
+    this.regex = regex;
+  }
+
+  public NewUnit(
+      String longName,
+      String shortName,
+      String windowType,
+      Optional<String> regex) {
+    this.longName = longName;
+    this.shortName = shortName;
+    this.windowType = WindowType.parseWindowType(windowType);
+    this.regex = regex;
+  }
 
   @Override
   public Optional<String> getRegex() {
-    // TODO Auto-generated method stub
-    return Optional.empty();
+    return regex;
   }
 
   @Override
   public String getLongName() {
-    // TODO Auto-generated method stub
-    return null;
+    return longName;
   }
 
   @Override
   public String getShortName() {
-    // TODO Auto-generated method stub
-    return null;
+    return shortName;
   }
 
   @Override
-  public String getWindowType() {
-    // TODO Auto-generated method stub
-    return null;
+  public WindowType getWindowType() {
+    return windowType;
   }
 
   @Override
   public void setLongName(String name) {
-    // TODO Auto-generated method stub
-
+    longName = name;
   }
 
   @Override
   public void setShortName(String name) {
-    // TODO Auto-generated method stub
-
+    shortName = name;
   }
 
   @Override
   public void setRegex(Optional<String> regex) {
-    // TODO Auto-generated method stub
-
+    this.regex = regex;
   }
 
   @Override
-  public void setWindowType(String type) {
-    // TODO Auto-generated method stub
+  public void setWindowType(WindowType type) {
+    windowType = type;
+  }
 
+  @Override
+  public String toString() {
+    StringBuilder str = new StringBuilder(longName)
+        .append("(")
+        .append(shortName)
+        .append(") Tipo Ventana: ")
+        .append(windowType.toString())
+        .append(" regex: ")
+        .append(regex.isPresent() ? regex.get() : "None");
+
+    return str.toString();
   }
 }

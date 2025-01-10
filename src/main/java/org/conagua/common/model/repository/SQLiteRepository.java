@@ -215,6 +215,29 @@ public abstract class SQLiteRepository<E extends IEntity, C> implements IReposit
     }
   }
 
+  protected String getSqlStringCriteriaFilter(String field, Optional<StringCriteria> s) {
+    switch (s.get().getMode()) {
+      case EQ:
+        return field + "=?";
+      case LIKE:
+        return field + " LIKE ?";
+      default:
+        throw new IllegalArgumentException("Modo no soportado");
+    }
+  }
+
+  protected String stringOfCriteriaToBind(Optional<StringCriteria> str) {
+    StringCriteria s = str.get();
+    switch (s.getMode()) {
+      case EQ:
+        return s.getValue();
+      case LIKE:
+        return "%" + s.getValue() + "%";
+      default:
+        throw new IllegalArgumentException("Modo no soportado");
+    }
+  }
+
   protected abstract QueryData criteriaQuery(String query, C criteria, Optional<Long> offset) throws SQLException;
 
   protected abstract List<String> getConditions(C criteria);

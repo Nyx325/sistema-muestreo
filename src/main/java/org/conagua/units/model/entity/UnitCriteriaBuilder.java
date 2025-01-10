@@ -12,6 +12,10 @@ public class UnitCriteriaBuilder {
     this.criteria = new UnitCriteria();
   }
 
+  public UnitCriteria build() {
+    return criteria;
+  }
+
   public UnitCriteriaBuilder active(boolean active) {
     criteria.active = Optional.of(active);
     return this;

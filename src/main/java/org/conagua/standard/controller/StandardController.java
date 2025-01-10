@@ -2,17 +2,16 @@ package org.conagua.standard.controller;
 
 import java.util.*;
 import org.conagua.common.model.entity.*;
+import org.conagua.common.controller.Controller;
 import org.conagua.standard.model.entity.*;
 
-import org.conagua.common.controller.IController;
 import org.conagua.common.model.repository.IRepository;
 import org.conagua.standard.model.repository.StandardSQLiteRepository;
 
-public class StandardController implements IController<IStandard, INewStandard, StandardCriteria> {
-  IRepository<IStandard, StandardCriteria> repo;
+public class StandardController extends Controller<IStandard, INewStandard, StandardCriteria> {
 
   public StandardController(IRepository<IStandard, StandardCriteria> repo) {
-    this.repo = repo;
+    super(repo);
   }
 
   public StandardController() {

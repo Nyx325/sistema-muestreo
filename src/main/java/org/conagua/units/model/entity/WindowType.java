@@ -14,4 +14,14 @@ public enum WindowType {
         throw new IllegalArgumentException("Tipo de ventana no válido: " + type);
     }
   }
+
+  @Override
+  public String toString() {
+    switch (this) {
+      case TIPO1:
+        return "TIPO1";
+      default:
+        throw new RuntimeException("Not implemented for this variant yet");
+    }
+  }
 }
