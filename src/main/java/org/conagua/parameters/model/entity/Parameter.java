@@ -7,6 +7,12 @@ public class Parameter implements IParameter {
   private boolean active;
   private String name;
 
+  public Parameter(UUID id, boolean active, String name) {
+    this.id = id;
+    this.active = active;
+    this.name = name;
+  }
+
   @Override
   public UUID getId() {
     return id;
