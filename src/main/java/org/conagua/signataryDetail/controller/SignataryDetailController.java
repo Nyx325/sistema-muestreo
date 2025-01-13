@@ -38,11 +38,11 @@ public class SignataryDetailController
   protected Result<Void, String> validateNewSignataryDetail(INewSignataryDetail obj) {
     List<String> errors = new ArrayList<>();
 
-    if (obj.getStandard() == null) {
+    if (obj.getAction() == null) {
       errors.add("no se proporcionó una norma");
     }
 
-    if (obj.getUnit() == null) {
+    if (obj.getSignatary() == null) {
       errors.add("no se proporcionó unidad");
     }
 
@@ -61,16 +61,67 @@ public class SignataryDetailController
       return Result.err(validation.unwrapErr());
     }
 
+    if (!repoAct.get(data.getAction()).isPresent()) {
+      return Result.err("No se encontró la acción");
+    }
+
+    if (!repoSig.get(data.getSignatary()).isPresent()) {
+      return Result.err("No se encontró el signatario");
+    }
+
     SignataryDetailCriteria criteria = new SignataryDetailCriteria(
-        Optional.of(data.getUnit()),
-        Optional.of(data.getStandard()));
+        Optional.of(data.getAction()),
+        Optional.of(data.getSignatary()));
+
+    if (!repo.getBy(criteria, 1).getResult().isPresent()) {
+      return Result.err("ya existe esta relación");
+    }
 
     ISignataryDetail sig = new SignataryDetail(
         UUID.randomUUID(),
-        data.getStandard(),
-        data.getUnit());
+        data.getAction(),
+        data.getSignatary());
 
     repo.add(sig);
     return Result.ok(sig);
+  }
+
+  @Override
+  public Optional<ISignataryDetail> get(UUID id) throws Exception {
+    if (id == null)
+      throw new NullPointerException();
+
+    return repo.get(id);
+  }
+
+  @Override
+  public Result<Void, String> delete(UUID id) throws Exception {
+    if (!repo.get(id).isPresent()) {
+      return Result.err("No se encontró el registro");
+    }
+
+    repo.delete(id);
+    return Result.ok();
+  }
+
+  @Override
+  public Result<Void, String> delete(ISignataryDetail data) throws Exception {
+    if (!repo.get(data.getId()).isPresent()) {
+      return Result.err("No se encontró el registro");
+    }
+
+    repo.delete(data);
+    return Result.ok();
+  }
+
+  @Override
+  public Result<Void, String> update(ISignataryDetail data) throws Exception {
+    return null;
+  }
+
+  @Override
+  public Search<ISignataryDetail, SignataryDetailCriteria> getBy(SignataryDetailCriteria criteria, long page)
+      throws Exception {
+    return repo.getBy(criteria, page);
   }
 }

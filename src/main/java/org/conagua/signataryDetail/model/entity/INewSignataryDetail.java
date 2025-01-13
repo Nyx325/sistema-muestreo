@@ -3,11 +3,11 @@ package org.conagua.signataryDetail.model.entity;
 import java.util.UUID;
 
 public interface INewSignataryDetail {
-  public UUID getStandard();
+  public UUID getSignatary();
 
-  public UUID getUnit();
+  public UUID getAction();
 
-  public void setStandard(UUID standard);
+  public void setSignatary(UUID id);
 
-  public void setUnit(UUID unit);
+  public void setAction(UUID id);
 }

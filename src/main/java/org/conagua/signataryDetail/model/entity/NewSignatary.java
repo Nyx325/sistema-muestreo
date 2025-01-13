@@ -3,26 +3,26 @@ package org.conagua.signataryDetail.model.entity;
 import java.util.UUID;
 
 public class NewSignatary implements INewSignataryDetail {
-  private UUID unit;
-  private UUID standard;
+  private UUID signatary;
+  private UUID action;
 
   @Override
-  public UUID getUnit() {
-    return unit;
+  public UUID getSignatary() {
+    return signatary;
   }
 
   @Override
-  public UUID getStandard() {
-    return standard;
+  public UUID getAction() {
+    return action;
   }
 
   @Override
-  public void setStandard(UUID standard) {
-    this.standard = standard;
+  public void setSignatary(UUID id) {
+    this.signatary = id;
   }
 
   @Override
-  public void setUnit(UUID unit) {
-    this.unit = unit;
+  public void setAction(UUID id) {
+    this.action = id;
   }
 }
