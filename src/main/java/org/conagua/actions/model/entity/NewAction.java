@@ -33,4 +33,13 @@ public class NewAction implements INewAction {
   public void setName(String name) {
     this.name = name;
   }
+
+  @Override
+  public String toString() {
+    StringBuilder str = new StringBuilder("Nombre: ")
+        .append(name)
+        .append(" Param: ")
+        .append(param.isEmpty() ? "None" : param.get());
+    return str.toString();
+  }
 }

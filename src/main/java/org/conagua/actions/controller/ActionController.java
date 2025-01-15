@@ -35,8 +35,12 @@ public class ActionController extends Controller<IAction, INewAction, ActionCrit
       errors.add("formato de nombre inválido");
     }
 
+    UUID param = data.getParam().get();
+    System.out.println("ID param: " + param);
+    System.out.println(repo.get(param).isPresent());
+
     if (data.getParam().isPresent() &&
-        !repo.get(data.getParam().get()).isPresent()) {
+        !parameterRepo.get(data.getParam().get()).isPresent()) {
       errors.add("no se encontró el parámetro");
     }
 
@@ -51,6 +55,7 @@ public class ActionController extends Controller<IAction, INewAction, ActionCrit
   @Override
   public Result<IAction, String> add(INewAction data) throws Exception {
     Result<Void, String> validation = validateNewAction(data);
+
     if (validation.isErr()) {
       return Result.err(validation.unwrapErr());
     }

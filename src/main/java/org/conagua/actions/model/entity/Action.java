@@ -54,4 +54,17 @@ public class Action implements IAction {
   public void setActive(boolean active) {
     this.active = active;
   }
+
+  @Override
+  public String toString() {
+    StringBuilder str = new StringBuilder("ID: ")
+        .append(id)
+        .append(" Activo: ")
+        .append(active)
+        .append(" Nombre: ")
+        .append(name)
+        .append(" Param: ")
+        .append(param.isEmpty() ? "None" : param.get());
+    return str.toString();
+  }
 }

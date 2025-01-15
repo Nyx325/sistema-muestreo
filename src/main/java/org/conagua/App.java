@@ -9,15 +9,26 @@ import org.conagua.actions.model.repository.*;
 import org.conagua.common.controller.IController;
 import org.conagua.common.model.configs.TestConfig;
 import org.conagua.common.model.repository.IRepository;
+import org.conagua.parameters.controller.ParameterController;
+import org.conagua.parameters.model.entity.INewParameter;
+import org.conagua.parameters.model.entity.IParameter;
+import org.conagua.parameters.model.entity.NewParameter;
+import org.conagua.parameters.model.entity.ParameterCriteria;
 import org.conagua.parameters.model.repository.ParameterSQLiteRepository;
 
 public class App {
   IController<IAction, INewAction, ActionCriteria> ctrl;
+  IController<IParameter, INewParameter, ParameterCriteria> ctrlParam;
 
   public App() {
     IRepository<IAction, ActionCriteria> repo;
+    IRepository<IParameter, ParameterCriteria> repoParam;
+
     repo = new ActionSQLiteRepository(TestConfig.getInstance());
-    this.ctrl = new ActionController(repo, new ParameterSQLiteRepository());
+    repoParam = new ParameterSQLiteRepository(TestConfig.getInstance());
+
+    this.ctrl = new ActionController(repo, repoParam);
+    this.ctrlParam = new ParameterController(repoParam);
   }
 
   public void print() throws Exception {
@@ -48,24 +59,37 @@ public class App {
   }
 
   public List<IAction> agregar() throws Exception {
-    System.out.println("AGREGAR");
     List<IAction> nuevos = new ArrayList<>();
     List<INewAction> agregados = new ArrayList<>();
+
+    Result<IParameter, String> res;
+    res = this.ctrlParam.add(new NewParameter("Microbiologia"));
+
+    if (res.isErr()) {
+      System.out.println("Error al agregar parametro");
+      return nuevos;
+    }
+
+    IParameter param = res.unwrapOk();
+    System.out.println("Se agregó parametro");
+    System.out.println(param);
+
+    System.out.println("AGREGAR");
 
     agregados.add(
         new NewAction(
             "E-Coli",
-            Optional.of(UUID.fromString("50a78c7f-2365-4948-a172-ff772b59fc30"))));
+            Optional.of(param.getId())));
 
     agregados.add(
         new NewAction(
             "Col. Totales",
-            Optional.of(UUID.fromString("50a78c7f-2365-4948-a172-ff772b59fc30"))));
+            Optional.of(param.getId())));
 
     agregados.add(
         new NewAction(
             "Col. Totales",
-            Optional.of(UUID.fromString("50a78c7f-2365-4948-a172-ff772b59fc30"))));
+            Optional.of(param.getId())));
 
     for (INewAction agregar : agregados) {
       System.out.println("Intentando agregar: " + agregar);
