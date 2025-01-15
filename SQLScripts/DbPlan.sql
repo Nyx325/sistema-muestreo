@@ -99,6 +99,7 @@ CREATE TABLE ParameterDetail(
 
 CREATE TABLE Sites(
   id UUID PRIMARY KEY NOT NULL,
+  active BOOLEAN NOT NULL,
   clave VARCHAR(100) NOT NULL,
   nombre VARCHAR(100) NOT NULL,
   cuenca VARCHAR(50),
@@ -115,9 +116,7 @@ CREATE TABLE Sites(
   longitud VARCHAR(50),
   uso VARCHAR(50),
   lugar_toma VARCHAR(100),
-  cliente UUID,
-  FOREIGN KEY (cliente) REFERENCES Clients(id)
-    ON DELETE SET NULL ON UPDATE CASCADE
+  cliente VARCHAR(50),
 );
 
 CREATE TABLE Samples(

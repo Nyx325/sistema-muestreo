@@ -1,5 +1,7 @@
 ## TODO
 
+- [ ] Controlador de detalle de parametro
+
 - [ ] Validar punteros nulos en la mayoria de controladores
 
 - [ ] Revisar punteros nulos en los criterios
