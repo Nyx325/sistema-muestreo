@@ -173,6 +173,7 @@ public class UnitController extends Controller<IUnit, INewUnit, UnitCriteria> {
       }
     }
 
+    repo.update(data);
     return Result.ok();
   }
 
