@@ -5,19 +5,35 @@ import org.conagua.common.model.entity.*;
 
 import org.conagua.common.controller.Controller;
 import org.conagua.common.model.repository.IRepository;
+import org.conagua.standard.model.entity.IStandard;
+import org.conagua.standard.model.entity.StandardCriteria;
+import org.conagua.standard.model.repository.StandardSQLiteRepository;
+import org.conagua.units.model.entity.IUnit;
+import org.conagua.units.model.entity.UnitCriteria;
+import org.conagua.units.model.repository.UnitSQLiteRepository;
 import org.conagua.unitsPerStandard.model.entity.*;
 import org.conagua.unitsPerStandard.model.repository.UnitPerStdSQLiteRepository;
 
 public class UnitPerStdController extends Controller<IUnitPerStd, INewUnitPerStd, UnitPerStdCriteria> {
-  public UnitPerStdController(IRepository<IUnitPerStd, UnitPerStdCriteria> repo) {
+  public IRepository<IUnit, UnitCriteria> repoUnits;
+  public IRepository<IStandard, StandardCriteria> repoStd;
+
+  public UnitPerStdController(
+      IRepository<IUnitPerStd, UnitPerStdCriteria> repo,
+      IRepository<IUnit, UnitCriteria> repoUnits,
+      IRepository<IStandard, StandardCriteria> repoStd) {
     super(repo);
+    this.repoUnits = repoUnits;
+    this.repoStd = repoStd;
   }
 
   public UnitPerStdController() {
-    this(new UnitPerStdSQLiteRepository());
+    this(new UnitPerStdSQLiteRepository(),
+        new UnitSQLiteRepository(),
+        new StandardSQLiteRepository());
   }
 
-  public Result<Void, String> validateNewStd(INewUnitPerStd obj) {
+  public Result<Void, String> validateNewStd(INewUnitPerStd obj) throws Exception {
     List<String> errors = new ArrayList<>();
 
     if (obj.getStandard() == null) {
@@ -26,6 +42,14 @@ public class UnitPerStdController extends Controller<IUnitPerStd, INewUnitPerStd
 
     if (obj.getUnit() == null) {
       errors.add("no se especificó una unidad");
+    }
+
+    if (!repoStd.get(obj.getStandard()).isPresent()) {
+      errors.add("No se encontró la norma");
+    }
+
+    if (!repoUnits.get(obj.getUnit()).isPresent()) {
+      errors.add("No se encontró la unidad");
     }
 
     if (errors.isEmpty()) {
