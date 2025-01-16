@@ -139,6 +139,7 @@ CREATE TABLE Samples(
 CREATE TABLE Result(
   id UUID PRIMARY KEY NOT NULL,
   result_json TEXT NOT NULL,
+  regex TEXT,
   analysis_date DATE NOT NULL,
   analyst UUID,
   test UUID,

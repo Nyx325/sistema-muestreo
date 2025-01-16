@@ -1,5 +1,7 @@
 ## TODO
 
+- [ ] Corregir repo de muestras que hizo Dr. CH
+
 - [ ] Controlador de detalle de parametro
 
 - [ ] Validar punteros nulos en la mayoria de controladores
