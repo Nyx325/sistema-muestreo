@@ -1,13 +1,14 @@
 package org.conagua.samples.model.repository;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import org.conagua.common.model.entity.*;
 import org.conagua.common.model.configs.*;
 import org.conagua.common.model.repository.*;
 
 import org.conagua.samples.model.entity.*;
-import org.conagua.samples.model.repository.*;
 
 public class SampleSQLiteRepository extends SQLiteRepository<ISample, SampleCriteria> {
   public SampleSQLiteRepository() {
@@ -112,10 +113,6 @@ public class SampleSQLiteRepository extends SQLiteRepository<ISample, SampleCrit
       conditions.add("active = ?");
     }
 
-    if (c.project.isPresent()) {
-      conditions.add("project = ?");
-    }
-
     if (c.sampler.isPresent()) {
       conditions.add("sampler = ?");
     }
@@ -124,8 +121,32 @@ public class SampleSQLiteRepository extends SQLiteRepository<ISample, SampleCrit
       conditions.add("site = ?");
     }
 
+    if (c.std.isPresent()) {
+      conditions.add("standard = ?");
+    }
+
+    if (c.sampleDate.isPresent()) {
+      conditions.add("sample_date = ?");
+    }
+
+    if (c.receiptDate.isPresent()) {
+      conditions.add("receipt_date = ?");
+    }
+
+    if (c.conaguaAiId.isPresent()) {
+      conditions.add("conagua_ai_id LIKE ?");
+    }
+
+    if (c.sampleNumber.isPresent()) {
+      conditions.add("sample_number LIKE ?");
+    }
+
     if (c.samplingPlan.isPresent()) {
       conditions.add(getSqlStringCriteriaFilter("sampling_plan", c.samplingPlan));
+    }
+
+    if (c.project.isPresent()) {
+      conditions.add(getSqlStringCriteriaFilter("project", c.project));
     }
 
     return conditions;
@@ -142,14 +163,50 @@ public class SampleSQLiteRepository extends SQLiteRepository<ISample, SampleCrit
     if (c.active.isPresent()) {
       pstmt.setBoolean(paramIndex++, c.active.get());
     }
-    if (c.project.isPresent()) {
-      pstmt.setString(paramIndex++, stringOfCriteriaToBind(c.project));
-    }
+
     if (c.sampler.isPresent()) {
-      pstmt.setString(paramIndex++, c.sampler.get().toString());
+      UUID id = c.sampler.get();
+      pstmt.setString(paramIndex++, id.toString());
     }
+
     if (c.site.isPresent()) {
-      pstmt.setString(paramIndex++, c.site.get().toString());
+      UUID id = c.site.get();
+      pstmt.setString(paramIndex++, id.toString());
+    }
+
+    if (c.std.isPresent()) {
+      UUID id = c.std.get();
+      pstmt.setString(paramIndex++, id.toString());
+    }
+
+    if (c.sampleDate.isPresent()) {
+      LocalDateTime sampleDate = c.sampleDate.get();
+      pstmt.setString(paramIndex++, sampleDate.toString());
+    }
+
+    if (c.receiptDate.isPresent()) {
+      LocalDate receiptDate = c.receiptDate.get();
+      pstmt.setString(paramIndex++, receiptDate.toString());
+    }
+
+    if (c.conaguaAiId.isPresent()) {
+      long aiId = c.conaguaAiId.get();
+      pstmt.setLong(paramIndex++, aiId);
+    }
+
+    if (c.sampleNumber.isPresent()) {
+      long sampleNumber = c.sampleNumber.get();
+      pstmt.setLong(paramIndex++, sampleNumber);
+    }
+
+    if (c.samplingPlan.isPresent()) {
+      String value = stringOfCriteriaToBind(c.samplingPlan);
+      pstmt.setString(paramIndex++, value);
+    }
+
+    if (c.project.isPresent()) {
+      String value = stringOfCriteriaToBind(c.project);
+      pstmt.setString(paramIndex++, value);
     }
 
     if (offset.isPresent()) {
