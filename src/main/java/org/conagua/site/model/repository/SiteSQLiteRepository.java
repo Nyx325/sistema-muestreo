@@ -69,43 +69,31 @@ public class SiteSQLiteRepository extends SQLiteRepository<ISite, SiteCriteria> 
     return "id";
   }
 
+  private String getOptstr(Optional<String> s) {
+    return s.isPresent() ? s.get() : null;
+  }
+
   @Override
   public String[] fieldsWithoutId(ISite s) {
-    String cuenca = s.getCuenca().isPresent() ? s.getCuenca().get() : null;
-    String claveAcuifero = s.getClaveAcuifero().isPresent() ? s.getClaveAcuifero().get() : null;
-    String acuifero = s.getAcuifero().isPresent() ? s.getAcuifero().get() : null;
-    String organismo = s.getOrganismo().isPresent() ? s.getOrganismo().get() : null;
-    String direccionLocal = s.getDireccionLocal().isPresent() ? s.getDireccionLocal().get() : null;
-    String estado = s.getEstado().isPresent() ? s.getEstado().get() : null;
-    String municipio = s.getMunicipio().isPresent() ? s.getMunicipio().get() : null;
-    String cuerpoAgua = s.getCuerpoAgua().isPresent() ? s.getCuerpoAgua().get() : null;
-    String tipoCuerpo = s.getTipoCuerpo().isPresent() ? s.getTipoCuerpo().get() : null;
-    String subtipoCuerpo = s.getSubtipoCuerpo().isPresent() ? s.getSubtipoCuerpo().get() : null;
-    String latitud = s.getLatitud().isPresent() ? s.getLatitud().get() : null;
-    String longitud = s.getLongitud().isPresent() ? s.getLongitud().get() : null;
-    String uso = s.getUso().isPresent() ? s.getUso().get() : null;
-    String lugarToma = s.getLugarToma().isPresent() ? s.getLugarToma().get() : null;
-    String cliente = s.getCliente().isPresent() ? s.getCliente().get() : null;
-
     return new String[] {
         Boolean.toString(s.isActive()),
         s.getClave(),
         s.getNombre(),
-        cuenca,
-        claveAcuifero,
-        acuifero,
-        organismo,
-        direccionLocal,
-        estado,
-        municipio,
-        cuerpoAgua,
-        tipoCuerpo,
-        subtipoCuerpo,
-        latitud,
-        longitud,
-        uso,
-        lugarToma,
-        cliente
+        getOptstr(s.getCuenca()),
+        getOptstr(s.getClaveAcuifero()),
+        getOptstr(s.getAcuifero()),
+        getOptstr(s.getOrganismo()),
+        getOptstr(s.getDireccionLocal()),
+        getOptstr(s.getEstado()),
+        getOptstr(s.getMunicipio()),
+        getOptstr(s.getCuerpoAgua()),
+        getOptstr(s.getTipoCuerpo()),
+        getOptstr(s.getSubtipoCuerpo()),
+        getOptstr(s.getLatitud()),
+        getOptstr(s.getLongitud()),
+        getOptstr(s.getUso()),
+        getOptstr(s.getLugarToma()),
+        getOptstr(s.getCliente()),
     };
   }
 
