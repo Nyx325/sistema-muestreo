@@ -3,12 +3,10 @@ package org.conagua.results.model.entity;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import org.conagua.common.model.entity.IEntity;
-import org.conagua.common.model.entity.ILogicalDeletable;
-
 import jakarta.json.JsonObject;
 
-public interface IResult extends IEntity, ILogicalDeletable {
+public interface INewResult {
+
   JsonObject getResult();
 
   String getRegex();
